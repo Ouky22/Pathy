@@ -27,7 +27,7 @@ class VisualizerGrid extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(
               border: Border.all(color: Colors.black, width: 0.3),
-              color: isActive ? Colors.green : Colors.red,
+              color: isActive ? Colors.teal : Colors.white70,
             ),
           ),
         );

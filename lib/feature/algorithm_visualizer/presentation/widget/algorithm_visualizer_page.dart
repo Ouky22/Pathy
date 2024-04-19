@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pathy/feature/algorithm_visualizer/presentation/visualizer_view_model.dart';
+import 'package:pathy/feature/algorithm_visualizer/presentation/widget/visualizer_control_section.dart';
 import 'package:pathy/feature/algorithm_visualizer/presentation/widget/visualizer_grid.dart';
 import 'package:provider/provider.dart';
-
-import '../visualizer_event.dart';
-import '../visualizer_state.dart';
 
 class AlgorithmVisualizerPage extends StatelessWidget {
   const AlgorithmVisualizerPage({super.key});
@@ -15,61 +13,21 @@ class AlgorithmVisualizerPage extends StatelessWidget {
         create: (context) => VisualizerViewModel(),
         child: Consumer<VisualizerViewModel>(builder: (context, model, child) {
           return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Expanded(
-                  child: VisualizerGrid(
-                      rows: VisualizerViewModel.rows,
-                      columns: VisualizerViewModel.cols,
-                      grid: model.state.grid)),
-              Row(
-                children: [
-                  TextButton(
-                      onPressed: () {
-                        model.onEvent(StopResetButtonClick());
-                      },
-                      child: Text(_stopResetButtonText(
-                          model.state.algorithmRunningStatus))),
-                  TextButton(
-                    onPressed: () {
-                      model.onEvent(PlayPauseButtonClick());
-                    },
-                    child: Text(_playPauseButtonText(
-                        model.state.algorithmRunningStatus)),
-                  ),
-                  Slider(
-                      value: model.state.speedLevelIndex.toDouble(),
-                      min: VisualizerViewModel.minSpeedLevelIndex.toDouble(),
-                      max: VisualizerViewModel.maxSpeedLevelIndex.toDouble(),
-                      divisions: VisualizerViewModel.maxSpeedLevelIndex -
-                          VisualizerViewModel.minSpeedLevelIndex,
-                      onChanged: (double value) {
-                        model.onEvent(ChangeAnimationSpeed(
-                            newSpeedLevelIndex: value.toInt()));
-                      }),
-                ],
-              )
+                child: Container(
+                    margin: const EdgeInsets.all(5.0),
+                    child: VisualizerGrid(
+                        rows: VisualizerViewModel.rows,
+                        columns: VisualizerViewModel.cols,
+                        grid: model.state.grid)),
+              ),
+              Container(
+                  margin: const EdgeInsets.symmetric(vertical: 5.0),
+                  child: const VisualizerControlSection())
             ],
           );
         }));
-  }
-
-  String _playPauseButtonText(AlgorithmRunningStatus algorithmRunningStatus) {
-    switch (algorithmRunningStatus) {
-      case AlgorithmRunningStatus.stopped:
-      case AlgorithmRunningStatus.paused:
-        return "Play";
-      case AlgorithmRunningStatus.running:
-        return "Pause";
-    }
-  }
-
-  String _stopResetButtonText(AlgorithmRunningStatus algorithmRunningStatus) {
-    switch (algorithmRunningStatus) {
-      case AlgorithmRunningStatus.stopped:
-        return "Reset";
-      case AlgorithmRunningStatus.running:
-      case AlgorithmRunningStatus.paused:
-        return "Stop";
-    }
   }
 }
