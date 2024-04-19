@@ -1,3 +1,4 @@
+import 'package:pathy/feature/algorithm_visualizer/domain/algorithm_speed_level.dart';
 import 'package:pathy/feature/algorithm_visualizer/presentation/visualizer_event.dart';
 import 'package:pathy/feature/algorithm_visualizer/presentation/visualizer_state.dart';
 import 'package:pathy/feature/algorithm_visualizer/presentation/visualizer_view_model.dart';
@@ -59,6 +60,32 @@ void main() {
       expect(viewModel.state.algorithmRunningStatus,
           AlgorithmRunningStatus.stopped);
       _expectWholeGridIsEmpty(viewModel.state.grid);
+    });
+  });
+
+  group("change animation speed", () {
+    late VisualizerViewModel viewModel;
+
+    setUp(() {
+      viewModel = VisualizerViewModel();
+    });
+
+    test("from slow to fast", () {
+      var maxSpeedLevelIndex = AlgorithmSpeedLevel.values.length - 1;
+      viewModel.onEvent(ChangeAnimationSpeed(newSpeedLevelIndex: 0));
+      viewModel.onEvent(
+          ChangeAnimationSpeed(newSpeedLevelIndex: maxSpeedLevelIndex));
+
+      expect(viewModel.state.speedLevelIndex, maxSpeedLevelIndex);
+    });
+
+    test("from fast to slow", () {
+      var maxSpeedLevelIndex = AlgorithmSpeedLevel.values.length - 1;
+      viewModel.onEvent(
+          ChangeAnimationSpeed(newSpeedLevelIndex: maxSpeedLevelIndex));
+      viewModel.onEvent(ChangeAnimationSpeed(newSpeedLevelIndex: 0));
+
+      expect(viewModel.state.speedLevelIndex, 0);
     });
   });
 }
