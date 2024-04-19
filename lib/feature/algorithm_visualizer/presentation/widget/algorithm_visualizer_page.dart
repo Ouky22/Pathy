@@ -35,7 +35,17 @@ class AlgorithmVisualizerPage extends StatelessWidget {
                     },
                     child: Text(_playPauseButtonText(
                         model.state.algorithmRunningStatus)),
-                  )
+                  ),
+                  Slider(
+                      value: model.state.speedLevelIndex.toDouble(),
+                      min: VisualizerViewModel.minSpeedLevelIndex.toDouble(),
+                      max: VisualizerViewModel.maxSpeedLevelIndex.toDouble(),
+                      divisions: VisualizerViewModel.maxSpeedLevelIndex -
+                          VisualizerViewModel.minSpeedLevelIndex,
+                      onChanged: (double value) {
+                        model.onEvent(ChangeAnimationSpeed(
+                            newSpeedLevelIndex: value.toInt()));
+                      }),
                 ],
               )
             ],

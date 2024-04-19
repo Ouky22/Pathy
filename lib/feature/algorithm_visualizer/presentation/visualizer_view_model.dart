@@ -3,22 +3,30 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:pathy/feature/algorithm_visualizer/presentation/visualizer_event.dart';
 
+import '../domain/algorithm_speed_level.dart';
 import '../domain/fake_algorithm.dart';
 import 'visualizer_state.dart';
 
 class VisualizerViewModel extends ChangeNotifier {
   static const int rows = 64;
   static const int cols = 64;
+  static int minSpeedLevelIndex = 0;
+  static int maxSpeedLevelIndex = AlgorithmSpeedLevel.values.length - 1;
 
   late final VisualizerState state;
 
-  FakeAlgorithm? _algorithm;
+  late FakeAlgorithm _algorithm;
 
   StreamSubscription? _algorithmStreamSubscription;
 
   VisualizerViewModel() {
     var grid = List.generate(rows, (_) => List<bool>.filled(cols, false));
-    state = VisualizerState(grid: grid);
+    var defaultSpeedLevel = AlgorithmSpeedLevel.medium;
+    state =
+        VisualizerState(grid: grid, speedLevelIndex: defaultSpeedLevel.index);
+    _algorithm = FakeAlgorithm(
+        grid: state.grid,
+        delayInMilliseconds: mapAlgorithmSpeedLevelToDelay(defaultSpeedLevel));
   }
 
   void onEvent(VisualizerEvent event) {
@@ -27,6 +35,8 @@ class VisualizerViewModel extends ChangeNotifier {
         _onPlayPauseButtonClick();
       case StopResetButtonClick _:
         _onStopResetButtonClick();
+      case ChangeAnimationSpeed event:
+        _onChangeAlgorithmAnimationSpeed(event.newSpeedLevelIndex);
     }
   }
 
@@ -81,14 +91,20 @@ class VisualizerViewModel extends ChangeNotifier {
     // make sure stream is cancelled to avoid memory leaks
     _algorithmStreamSubscription?.cancel();
 
-    _algorithm = FakeAlgorithm(grid: state.grid);
-    var stream = _algorithm?.execute();
-    _algorithmStreamSubscription = stream?.listen((newGrid) {
+    var stream = _algorithm.execute();
+    _algorithmStreamSubscription = stream.listen((newGrid) {
       state.grid = newGrid;
       notifyListeners();
     });
 
     state.algorithmRunningStatus = AlgorithmRunningStatus.running;
+    notifyListeners();
+  }
+
+  void _onChangeAlgorithmAnimationSpeed(int newSpeedLevelIndex) {
+    state.speedLevelIndex = newSpeedLevelIndex;
+    _algorithm.delayInMilliseconds = mapAlgorithmSpeedLevelToDelay(
+        AlgorithmSpeedLevel.values[newSpeedLevelIndex]);
     notifyListeners();
   }
 

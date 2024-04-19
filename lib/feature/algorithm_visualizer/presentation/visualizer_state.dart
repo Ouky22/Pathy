@@ -3,8 +3,11 @@ class VisualizerState {
 
   AlgorithmRunningStatus algorithmRunningStatus;
 
+  int speedLevelIndex;
+
   VisualizerState({
     required this.grid,
+    required this.speedLevelIndex,
     this.algorithmRunningStatus = AlgorithmRunningStatus.stopped,
   });
 }
