@@ -1,5 +1,7 @@
+import 'package:pathy/feature/algorithm_visualizer/domain/model/node.dart';
+
 class VisualizerState {
-  List<List<bool>> grid;
+  List<List<Node>> grid;
 
   AlgorithmRunningStatus algorithmRunningStatus;
 

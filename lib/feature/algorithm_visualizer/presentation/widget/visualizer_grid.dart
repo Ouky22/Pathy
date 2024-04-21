@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:pathy/feature/algorithm_visualizer/domain/model/node.dart';
+
+import '../../domain/model/node_state.dart';
 
 class VisualizerGrid extends StatelessWidget {
   const VisualizerGrid(
@@ -8,7 +11,7 @@ class VisualizerGrid extends StatelessWidget {
       required this.grid});
 
   final int rows, columns;
-  final List<List<bool>> grid;
+  final List<List<Node>> grid;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +24,7 @@ class VisualizerGrid extends StatelessWidget {
       itemBuilder: (context, index) {
         int gridRow = index ~/ grid[0].length;
         int gridColumn = index % grid[0].length;
-        bool isActive = grid[gridRow][gridColumn];
+        bool isActive = grid[gridRow][gridColumn].state == NodeState.visited;
         return GestureDetector(
           onTap: () {},
           child: Container(

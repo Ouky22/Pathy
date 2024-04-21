@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
+import 'package:pathy/feature/algorithm_visualizer/domain/model/node.dart';
+import 'package:pathy/feature/algorithm_visualizer/domain/model/node_state.dart';
 import 'package:pathy/feature/algorithm_visualizer/presentation/visualizer_event.dart';
 
 import '../domain/algorithm_speed_level.dart';
@@ -20,7 +22,8 @@ class VisualizerViewModel extends ChangeNotifier {
   StreamSubscription? _algorithmStreamSubscription;
 
   VisualizerViewModel() {
-    var grid = List.generate(rows, (_) => List<bool>.filled(cols, false));
+    var grid =
+        List.generate(rows, (_) => List<Node>.generate(cols, (_) => Node()));
     var defaultSpeedLevel = AlgorithmSpeedLevel.medium;
     state =
         VisualizerState(grid: grid, speedLevelIndex: defaultSpeedLevel.index);
@@ -111,7 +114,7 @@ class VisualizerViewModel extends ChangeNotifier {
   void _clearGrid() {
     for (var row = 0; row < state.grid.length; row++) {
       for (var col = 0; col < state.grid[0].length; col++) {
-        state.grid[row][col] = false;
+        state.grid[row][col].state = NodeState.unvisited;
       }
     }
     notifyListeners();
