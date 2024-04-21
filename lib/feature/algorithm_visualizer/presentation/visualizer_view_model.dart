@@ -107,7 +107,7 @@ class VisualizerViewModel extends ChangeNotifier {
   void _onChangeAlgorithmAnimationSpeed(int newSpeedLevelIndex) {
     state.speedLevelIndex = newSpeedLevelIndex;
     _algorithm.delayInMilliseconds = mapAlgorithmSpeedLevelToDelay(
-        AlgorithmSpeedLevel.values[newSpeedLevelIndex]);
+        AlgorithmSpeedLevel.values[maxSpeedLevelIndex - newSpeedLevelIndex]);
     notifyListeners();
   }
 
