@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:pathy/feature/algorithm_visualizer/domain/model/node.dart';
 
+import '../../domain/model/node_grid.dart';
 import '../../domain/model/node_state.dart';
 
 class VisualizerGrid extends StatelessWidget {
@@ -11,7 +11,7 @@ class VisualizerGrid extends StatelessWidget {
       required this.grid});
 
   final int rows, columns;
-  final List<List<Node>> grid;
+  final NodeGrid grid;
 
   @override
   Widget build(BuildContext context) {

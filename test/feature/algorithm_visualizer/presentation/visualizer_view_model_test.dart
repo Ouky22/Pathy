@@ -1,5 +1,5 @@
 import 'package:pathy/feature/algorithm_visualizer/domain/algorithm_speed_level.dart';
-import 'package:pathy/feature/algorithm_visualizer/domain/model/node.dart';
+import 'package:pathy/feature/algorithm_visualizer/domain/model/node_grid.dart';
 import 'package:pathy/feature/algorithm_visualizer/domain/model/node_state.dart';
 import 'package:pathy/feature/algorithm_visualizer/presentation/visualizer_event.dart';
 import 'package:pathy/feature/algorithm_visualizer/presentation/visualizer_state.dart';
@@ -92,7 +92,7 @@ void main() {
   });
 }
 
-void _expectEveryNodeIsUnvisited(List<List<Node>> grid) {
+void _expectEveryNodeIsUnvisited(NodeGrid grid) {
   for (var row = 0; row < grid.length; row++) {
     for (var col = 0; col < grid.length; col++) {
       expect(grid[row][col].state, NodeState.unvisited);

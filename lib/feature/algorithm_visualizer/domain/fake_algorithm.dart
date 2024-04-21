@@ -1,10 +1,10 @@
 import 'dart:async';
 
-import 'package:pathy/feature/algorithm_visualizer/domain/model/node.dart';
+import 'package:pathy/feature/algorithm_visualizer/domain/model/node_grid.dart';
 import 'package:pathy/feature/algorithm_visualizer/domain/model/node_state.dart';
 
 class FakeAlgorithm {
-  final List<List<Node>> _grid;
+  final NodeGrid _grid;
 
   late int _delayInMilliseconds;
 
@@ -13,12 +13,12 @@ class FakeAlgorithm {
   }
 
   FakeAlgorithm({
-    required List<List<Node>> grid,
+    required NodeGrid grid,
     required int delayInMilliseconds,
   })  : _grid = grid,
         _delayInMilliseconds = delayInMilliseconds;
 
-  Stream<List<List<Node>>> execute() async* {
+  Stream<NodeGrid> execute() async* {
     while (true) {
       for (var row = 0; row < _grid.length; row++) {
         for (var col = 0; col < _grid[0].length; col++) {
