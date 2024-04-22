@@ -1,4 +1,4 @@
-abstract interface class VisualizerEvent {}
+sealed class VisualizerEvent {}
 
 class PlayPauseButtonClick implements VisualizerEvent {}
 
