@@ -18,10 +18,7 @@ class AlgorithmVisualizerPage extends StatelessWidget {
               Expanded(
                 child: Container(
                     margin: const EdgeInsets.all(5.0),
-                    child: VisualizerGrid(
-                        rows: VisualizerViewModel.rows,
-                        columns: VisualizerViewModel.cols,
-                        grid: model.state.grid)),
+                    child: const VisualizerGrid()),
               ),
               Container(
                   margin: const EdgeInsets.symmetric(vertical: 5.0),
