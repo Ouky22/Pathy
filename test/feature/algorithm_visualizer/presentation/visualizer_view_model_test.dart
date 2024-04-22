@@ -90,6 +90,27 @@ void main() {
       expect(viewModel.state.speedLevelIndex, 0);
     });
   });
+
+  group("toggle wall node", () {
+    late VisualizerViewModel viewModel;
+
+    setUp(() {
+      viewModel = VisualizerViewModel();
+    });
+
+    test("toggle wall node", () {
+      var row = 0;
+      var col = 0;
+      var node = viewModel.state.grid[row][col];
+      expect(node.state, NodeState.unvisited);
+
+      viewModel.onEvent(ToggleWallNode(row: row, column: col));
+      expect(node.state, NodeState.wall);
+
+      viewModel.onEvent(ToggleWallNode(row: row, column: col));
+      expect(node.state, NodeState.unvisited);
+    });
+  });
 }
 
 void _expectEveryNodeIsUnvisited(NodeGrid grid) {

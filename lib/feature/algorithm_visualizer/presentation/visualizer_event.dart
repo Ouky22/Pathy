@@ -9,3 +9,10 @@ class ChangeAnimationSpeed implements VisualizerEvent {
 
   ChangeAnimationSpeed({required this.newSpeedLevelIndex});
 }
+
+class ToggleWallNode implements VisualizerEvent {
+  final int row;
+  final int column;
+
+  ToggleWallNode({required this.row, required this.column});
+}

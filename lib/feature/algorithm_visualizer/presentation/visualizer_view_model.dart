@@ -40,6 +40,8 @@ class VisualizerViewModel extends ChangeNotifier {
         _onStopResetButtonClick();
       case ChangeAnimationSpeed event:
         _onChangeAlgorithmAnimationSpeed(event.newSpeedLevelIndex);
+      case ToggleWallNode event:
+        _toggleWall(state.grid[event.row][event.column]);
     }
   }
 
@@ -116,6 +118,15 @@ class VisualizerViewModel extends ChangeNotifier {
       for (var col = 0; col < state.grid[0].length; col++) {
         state.grid[row][col].state = NodeState.unvisited;
       }
+    }
+    notifyListeners();
+  }
+
+  void _toggleWall(Node node) {
+    if (node.state == NodeState.wall) {
+      node.state = NodeState.unvisited;
+    } else if (node.state == NodeState.unvisited) {
+      node.state = NodeState.wall;
     }
     notifyListeners();
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pathy/feature/algorithm_visualizer/presentation/visualizer_event.dart';
 import 'package:provider/provider.dart';
 
 import '../../domain/model/node_state.dart';
@@ -23,7 +24,9 @@ class VisualizerGrid extends StatelessWidget {
         int gridColumn = index % grid[0].length;
 
         return GestureDetector(
-          onTap: () {},
+          onTap: () {
+            model.onEvent(ToggleWallNode(row: gridRow, column: gridColumn));
+          },
           child: Container(
             decoration: BoxDecoration(
               border: Border.all(color: Colors.black, width: 0.3),
