@@ -1,12 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
+import 'package:pathy/feature/algorithm_visualizer/domain/dijkstra.dart';
 import 'package:pathy/feature/algorithm_visualizer/domain/model/node.dart';
 import 'package:pathy/feature/algorithm_visualizer/domain/model/node_state.dart';
 import 'package:pathy/feature/algorithm_visualizer/presentation/visualizer_event.dart';
 
 import '../domain/algorithm_speed_level.dart';
-import '../domain/fake_algorithm.dart';
 import 'visualizer_state.dart';
 
 class VisualizerViewModel extends ChangeNotifier {
@@ -17,7 +17,7 @@ class VisualizerViewModel extends ChangeNotifier {
 
   late final VisualizerState state;
 
-  late FakeAlgorithm _algorithm;
+  late Dijkstra _algorithm;
 
   StreamSubscription? _algorithmStreamSubscription;
 
@@ -25,11 +25,20 @@ class VisualizerViewModel extends ChangeNotifier {
     var grid =
         List.generate(rows, (_) => List<Node>.generate(cols, (_) => Node()));
     var defaultSpeedLevel = AlgorithmSpeedLevel.medium;
-    state =
-        VisualizerState(grid: grid, speedLevelIndex: defaultSpeedLevel.index);
-    _algorithm = FakeAlgorithm(
+
+    var startNode = grid[10][15];
+    var targetNode = grid[15][20];
+    state = VisualizerState(
+        grid: grid,
+        speedLevelIndex: defaultSpeedLevel.index,
+        startNode: startNode,
+        targetNode: targetNode);
+
+    _algorithm = Dijkstra(
         grid: state.grid,
-        delayInMilliseconds: mapAlgorithmSpeedLevelToDelay(defaultSpeedLevel));
+        delayInMilliseconds: mapAlgorithmSpeedLevelToDelay(defaultSpeedLevel),
+        startNode: startNode,
+        targetNode: targetNode);
   }
 
   void onEvent(VisualizerEvent event) {

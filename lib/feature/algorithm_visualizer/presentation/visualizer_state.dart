@@ -1,3 +1,5 @@
+import 'package:pathy/feature/algorithm_visualizer/domain/model/node.dart';
+
 import '../domain/model/node_grid.dart';
 
 class VisualizerState {
@@ -7,9 +9,14 @@ class VisualizerState {
 
   int speedLevelIndex;
 
+  Node startNode;
+  Node targetNode;
+
   VisualizerState({
     required this.grid,
     required this.speedLevelIndex,
+    required this.startNode,
+    required this.targetNode,
     this.algorithmRunningStatus = AlgorithmRunningStatus.stopped,
   });
 }

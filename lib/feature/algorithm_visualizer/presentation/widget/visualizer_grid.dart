@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pathy/feature/algorithm_visualizer/presentation/visualizer_event.dart';
 import 'package:provider/provider.dart';
 
+import '../../domain/model/node.dart';
 import '../../domain/model/node_state.dart';
 import '../visualizer_view_model.dart';
 
@@ -30,7 +31,11 @@ class VisualizerGrid extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(
               border: Border.all(color: Colors.black, width: 0.3),
-              color: _getNodeColor(grid[gridRow][gridColumn].state),
+              color: _determineNodeColor(
+                node: grid[gridRow][gridColumn],
+                startNode: model.state.startNode,
+                targetNode: model.state.targetNode,
+              ),
             ),
           ),
         );
@@ -38,8 +43,16 @@ class VisualizerGrid extends StatelessWidget {
     );
   }
 
-  Color _getNodeColor(NodeState state) {
-    switch (state) {
+  Color _determineNodeColor(
+      {required Node node, required Node startNode, required Node targetNode}) {
+    if (node == startNode) {
+      return Colors.green;
+    } else if (node == targetNode) {
+      return Colors.red;
+    }
+
+    var color = Colors.white70;
+    switch (node.state) {
       case NodeState.visited:
         return Colors.teal;
       case NodeState.unvisited:
@@ -49,7 +62,7 @@ class VisualizerGrid extends StatelessWidget {
       case NodeState.path:
         return Colors.orangeAccent;
       default:
-        return Colors.white70;
+        return color;
     }
   }
 }
