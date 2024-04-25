@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pathy/feature/algorithm_visualizer/presentation/visualizer_view_model.dart';
+import 'package:pathy/feature/pathfinding_visualizer/presentation/visualizer_view_model.dart';
 import 'package:provider/provider.dart';
 
 import '../visualizer_event.dart';

@@ -1,4 +1,4 @@
-import 'package:pathy/feature/algorithm_visualizer/domain/model/node.dart';
+import 'package:pathy/feature/pathfinding_visualizer/domain/model/node.dart';
 
 import '../domain/model/node_grid.dart';
 

@@ -1,8 +1,8 @@
 import 'dart:collection';
 
-import 'package:pathy/feature/algorithm_visualizer/domain/model/no_path_to_target_exception.dart';
-import 'package:pathy/feature/algorithm_visualizer/domain/model/node.dart';
-import 'package:pathy/feature/algorithm_visualizer/domain/model/node_grid.dart';
+import 'package:pathy/feature/pathfinding_visualizer/domain/model/no_path_to_target_exception.dart';
+import 'package:pathy/feature/pathfinding_visualizer/domain/model/node.dart';
+import 'package:pathy/feature/pathfinding_visualizer/domain/model/node_grid.dart';
 
 import 'model/node_state.dart';
 

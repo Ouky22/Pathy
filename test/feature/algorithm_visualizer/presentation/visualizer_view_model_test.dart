@@ -1,9 +1,9 @@
-import 'package:pathy/feature/algorithm_visualizer/domain/algorithm_speed_level.dart';
-import 'package:pathy/feature/algorithm_visualizer/domain/model/node_grid.dart';
-import 'package:pathy/feature/algorithm_visualizer/domain/model/node_state.dart';
-import 'package:pathy/feature/algorithm_visualizer/presentation/visualizer_event.dart';
-import 'package:pathy/feature/algorithm_visualizer/presentation/visualizer_state.dart';
-import 'package:pathy/feature/algorithm_visualizer/presentation/visualizer_view_model.dart';
+import 'package:pathy/feature/pathfinding_visualizer/domain/algorithm_speed_level.dart';
+import 'package:pathy/feature/pathfinding_visualizer/domain/model/node_grid.dart';
+import 'package:pathy/feature/pathfinding_visualizer/domain/model/node_state.dart';
+import 'package:pathy/feature/pathfinding_visualizer/presentation/visualizer_event.dart';
+import 'package:pathy/feature/pathfinding_visualizer/presentation/visualizer_state.dart';
+import 'package:pathy/feature/pathfinding_visualizer/presentation/visualizer_view_model.dart';
 import 'package:test/test.dart';
 
 void main() {

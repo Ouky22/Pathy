@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pathy/feature/algorithm_visualizer/presentation/widget/algorithm_visualizer_page.dart';
+import 'package:pathy/feature/pathfinding_visualizer/presentation/widget/pathfinding_visualizer_page.dart';
 
 void main() {
   runApp(const MyApp());

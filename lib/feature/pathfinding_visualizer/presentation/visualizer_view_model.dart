@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
-import 'package:pathy/feature/algorithm_visualizer/domain/dijkstra.dart';
-import 'package:pathy/feature/algorithm_visualizer/domain/model/node.dart';
-import 'package:pathy/feature/algorithm_visualizer/domain/model/node_state.dart';
-import 'package:pathy/feature/algorithm_visualizer/presentation/visualizer_event.dart';
+import 'package:pathy/feature/pathfinding_visualizer/domain/dijkstra.dart';
+import 'package:pathy/feature/pathfinding_visualizer/domain/model/node.dart';
+import 'package:pathy/feature/pathfinding_visualizer/domain/model/node_state.dart';
+import 'package:pathy/feature/pathfinding_visualizer/presentation/visualizer_event.dart';
 
 import '../domain/algorithm_speed_level.dart';
 import 'visualizer_state.dart';

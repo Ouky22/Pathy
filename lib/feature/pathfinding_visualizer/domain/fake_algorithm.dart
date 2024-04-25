@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:pathy/feature/algorithm_visualizer/domain/model/node_grid.dart';
-import 'package:pathy/feature/algorithm_visualizer/domain/model/node_state.dart';
+import 'package:pathy/feature/pathfinding_visualizer/domain/model/node_grid.dart';
+import 'package:pathy/feature/pathfinding_visualizer/domain/model/node_state.dart';
 
 class FakeAlgorithm {
   final NodeGrid _grid;
