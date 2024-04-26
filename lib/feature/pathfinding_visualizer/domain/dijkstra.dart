@@ -14,7 +14,7 @@ class Dijkstra {
   int _delayInMilliseconds;
 
   Dijkstra({
-    required NodeGrid grid, // TODO add clone
+    required NodeGrid grid,
     required int delayInMilliseconds,
     required Node startNode,
     required Node targetNode,
@@ -28,7 +28,7 @@ class Dijkstra {
     yield* _emitPathSearchSteps();
     yield* _emitShortestPath();
   }
-  
+
   Stream<NodeGrid> _emitPathSearchSteps() async* {
     var foundPath = false;
     while (!foundPath) {
@@ -55,7 +55,7 @@ class Dijkstra {
       }
     }
   }
-  
+
   Stream<NodeGrid> _emitShortestPath() async* {
     var shortestPath = _getShortestPath();
     for (var node in shortestPath) {
