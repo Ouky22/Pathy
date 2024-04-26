@@ -6,7 +6,7 @@ import 'package:pathy/feature/pathfinding_visualizer/domain/model/node.dart';
 import 'package:pathy/feature/pathfinding_visualizer/domain/model/node_state.dart';
 import 'package:pathy/feature/pathfinding_visualizer/presentation/visualizer_event.dart';
 
-import '../domain/algorithm_speed_level.dart';
+import '../domain/model/algorithm_speed_level.dart';
 import 'visualizer_state.dart';
 
 class VisualizerViewModel extends ChangeNotifier {
