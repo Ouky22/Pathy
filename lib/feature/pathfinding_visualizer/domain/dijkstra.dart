@@ -12,6 +12,7 @@ class Dijkstra {
   final Node _targetNode;
   final _nodeInfo = HashMap<Node, DijkstraNodeInfo>();
   int _delayInMilliseconds;
+  bool foundPath = false;
 
   Dijkstra({
     required NodeGrid grid,
@@ -24,13 +25,16 @@ class Dijkstra {
         _targetNode = targetNode;
 
   Stream<NodeGrid> execute() async* {
+    foundPath = false;
     _initializeNodeInfo();
     yield* _emitPathSearchSteps();
-    yield* _emitShortestPath();
+
+    if (foundPath) {
+      yield* _emitShortestPath();
+    }
   }
 
   Stream<NodeGrid> _emitPathSearchSteps() async* {
-    var foundPath = false;
     while (!foundPath) {
       var currentlyVisitedNode = _getUnvisitedNodeWithLowestCost();
       if (currentlyVisitedNode == null) {

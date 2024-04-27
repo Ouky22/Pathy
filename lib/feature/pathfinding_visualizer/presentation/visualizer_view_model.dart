@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:pathy/feature/pathfinding_visualizer/domain/dijkstra.dart';
+import 'package:pathy/feature/pathfinding_visualizer/domain/model/no_path_to_target_exception.dart';
 import 'package:pathy/feature/pathfinding_visualizer/domain/model/node.dart';
 import 'package:pathy/feature/pathfinding_visualizer/domain/model/node_state.dart';
 import 'package:pathy/feature/pathfinding_visualizer/presentation/visualizer_event.dart';
@@ -106,10 +107,16 @@ class VisualizerViewModel extends ChangeNotifier {
     _algorithmStreamSubscription?.cancel();
 
     var stream = _algorithm.execute();
-    _algorithmStreamSubscription = stream.listen((newGrid) {
-      state.grid = newGrid;
-      notifyListeners();
-    });
+    _algorithmStreamSubscription = stream.listen(
+      (newGridEvent) {
+        notifyListeners();
+      },
+      onError: (error) {
+        if (error is NoPathToTargetException) {
+          // TODO
+        }
+      },
+    );
 
     state.algorithmRunningStatus = AlgorithmRunningStatus.running;
     notifyListeners();
