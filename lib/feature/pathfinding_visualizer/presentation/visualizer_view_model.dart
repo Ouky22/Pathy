@@ -11,8 +11,8 @@ import '../domain/model/algorithm_speed_level.dart';
 import 'visualizer_state.dart';
 
 class VisualizerViewModel extends ChangeNotifier {
-  static const int rows = 64;
-  static const int cols = 64;
+  static const int rows = 20;
+  static const int cols = 35;
   static int minSpeedLevelIndex = 0;
   static int maxSpeedLevelIndex = AlgorithmSpeedLevel.values.length - 1;
 
@@ -27,8 +27,8 @@ class VisualizerViewModel extends ChangeNotifier {
         List.generate(rows, (_) => List<Node>.generate(cols, (_) => Node()));
     var defaultSpeedLevel = AlgorithmSpeedLevel.medium;
 
-    var startNode = grid[10][15];
-    var targetNode = grid[15][20];
+    var startNode = grid[5][5];
+    var targetNode = grid[10][10];
     state = VisualizerState(
         grid: grid,
         speedLevelIndex: defaultSpeedLevel.index,
