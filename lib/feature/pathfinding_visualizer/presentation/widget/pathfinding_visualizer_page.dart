@@ -4,8 +4,8 @@ import 'package:pathy/feature/pathfinding_visualizer/presentation/widget/visuali
 import 'package:pathy/feature/pathfinding_visualizer/presentation/widget/visualizer_grid.dart';
 import 'package:provider/provider.dart';
 
-class AlgorithmVisualizerPage extends StatelessWidget {
-  const AlgorithmVisualizerPage({super.key});
+class PathfindingVisualizerPage extends StatelessWidget {
+  const PathfindingVisualizerPage({super.key});
 
   @override
   Widget build(BuildContext context) {
