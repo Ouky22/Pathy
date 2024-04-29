@@ -166,6 +166,10 @@ class VisualizerViewModel extends ChangeNotifier {
   }
 
   void _toggleWall(Node node) {
+    if (state.algorithmRunningStatus != AlgorithmRunningStatus.stopped) {
+      return;
+    }
+
     if (node.state == NodeState.wall) {
       node.state = NodeState.unvisited;
     } else if (node.state == NodeState.unvisited) {

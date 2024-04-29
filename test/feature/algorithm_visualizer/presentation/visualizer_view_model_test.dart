@@ -126,6 +126,25 @@ void main() {
       viewModel.onEvent(ToggleWallNode(row: row, column: col));
       expect(node.state, NodeState.unvisited);
     });
+
+    test("toggle wall node only allowed when stopped", () {
+      var row = 0;
+      var col = 0;
+      var node = viewModel.state.grid[row][col];
+      expect(node.state, NodeState.unvisited);
+
+      viewModel.onEvent(PlayPauseButtonClick()); // is running
+      viewModel.onEvent(ToggleWallNode(row: row, column: col));
+      expect(node.state, NodeState.unvisited);
+
+      viewModel.onEvent(PlayPauseButtonClick()); // is paused
+      viewModel.onEvent(ToggleWallNode(row: row, column: col));
+      expect(node.state, NodeState.unvisited);
+
+      viewModel.state.algorithmRunningStatus = AlgorithmRunningStatus.finished;
+      viewModel.onEvent(ToggleWallNode(row: row, column: col));
+      expect(node.state, NodeState.unvisited);
+    });
   });
 }
 
