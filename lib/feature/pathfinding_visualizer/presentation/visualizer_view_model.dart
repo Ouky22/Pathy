@@ -46,8 +46,8 @@ class VisualizerViewModel extends ChangeNotifier {
     switch (event) {
       case PlayPauseButtonClick _:
         _onPlayPauseButtonClick();
-      case StopResetButtonClick _:
-        _onStopResetButtonClick();
+      case ClearResetButtonClick _:
+        _onClearResetButtonClick();
       case ChangeAnimationSpeed event:
         _onChangeAlgorithmAnimationSpeed(event.newSpeedLevelIndex);
       case ToggleWallNode event:
@@ -63,19 +63,29 @@ class VisualizerViewModel extends ChangeNotifier {
     }
   }
 
-  void _onStopResetButtonClick() {
-    if (state.algorithmRunningStatus == AlgorithmRunningStatus.stopped) {
-      // TODO
-    } else {
-      _stopAlgorithm();
+  void _onClearResetButtonClick() {
+    switch (state.algorithmRunningStatus) {
+      case AlgorithmRunningStatus.paused:
+      case AlgorithmRunningStatus.running:
+        _stopAlgorithm();
+      case AlgorithmRunningStatus.stopped:
+        _resetGrid();
+      case AlgorithmRunningStatus.finished:
+        _clearVisitedAndPathNodes();
+        state.algorithmRunningStatus = AlgorithmRunningStatus.stopped;
+        notifyListeners();
     }
   }
 
   void _playAlgorithm() {
-    if (state.algorithmRunningStatus == AlgorithmRunningStatus.paused) {
-      _resumeAlgorithm();
-    } else if (state.algorithmRunningStatus == AlgorithmRunningStatus.stopped) {
-      _startNewAlgorithm();
+    switch (state.algorithmRunningStatus) {
+      case AlgorithmRunningStatus.paused:
+        _resumeAlgorithm();
+      case AlgorithmRunningStatus.stopped:
+      case AlgorithmRunningStatus.finished:
+        _startNewAlgorithm();
+      case AlgorithmRunningStatus.running:
+      // do nothing
     }
   }
 
@@ -99,12 +109,13 @@ class VisualizerViewModel extends ChangeNotifier {
 
     // Cancelling a stream takes a moment. So waiting for the future to complete
     // prevents clearing the grid before the algorithm stream is cancelled
-    cancelFuture?.whenComplete(() => _clearGrid());
+    cancelFuture?.whenComplete(() => _clearVisitedAndPathNodes());
   }
 
   void _startNewAlgorithm() {
     // make sure stream is cancelled to avoid memory leaks
     _algorithmStreamSubscription?.cancel();
+    _clearVisitedAndPathNodes();
 
     var stream = _algorithm.execute();
     _algorithmStreamSubscription = stream.listen(
@@ -115,6 +126,10 @@ class VisualizerViewModel extends ChangeNotifier {
         if (error is NoPathToTargetException) {
           // TODO
         }
+      },
+      onDone: () {
+        state.algorithmRunningStatus = AlgorithmRunningStatus.finished;
+        notifyListeners();
       },
     );
 
@@ -129,10 +144,22 @@ class VisualizerViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void _clearGrid() {
+  void _resetGrid() {
     for (var row = 0; row < state.grid.length; row++) {
       for (var col = 0; col < state.grid[0].length; col++) {
         state.grid[row][col].state = NodeState.unvisited;
+      }
+    }
+    notifyListeners();
+  }
+
+  void _clearVisitedAndPathNodes() {
+    for (var row = 0; row < state.grid.length; row++) {
+      for (var col = 0; col < state.grid[0].length; col++) {
+        var node = state.grid[row][col];
+        if (node.state == NodeState.visited || node.state == NodeState.path) {
+          node.state = NodeState.unvisited;
+        }
       }
     }
     notifyListeners();

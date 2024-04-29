@@ -2,7 +2,7 @@ sealed class VisualizerEvent {}
 
 class PlayPauseButtonClick implements VisualizerEvent {}
 
-class StopResetButtonClick implements VisualizerEvent {}
+class ClearResetButtonClick implements VisualizerEvent {}
 
 class ChangeAnimationSpeed implements VisualizerEvent {
   final int newSpeedLevelIndex;

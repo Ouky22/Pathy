@@ -34,10 +34,11 @@ void main() {
     });
 
     test("from running to stopped", () {
-      viewModel.onEvent(StopResetButtonClick());
+      viewModel.onEvent(PlayPauseButtonClick());
+      viewModel.onEvent(ClearResetButtonClick());
       expect(viewModel.state.algorithmRunningStatus,
           AlgorithmRunningStatus.stopped);
-      _expectEveryNodeIsUnvisited(viewModel.state.grid);
+      _expectEveryNodeIsNotVisitedAndNotPath(viewModel.state.grid);
     });
 
     test("from paused to running", () {
@@ -51,17 +52,32 @@ void main() {
     test("from paused to stopped", () {
       viewModel.onEvent(PlayPauseButtonClick());
       viewModel.onEvent(PlayPauseButtonClick());
-      viewModel.onEvent(StopResetButtonClick());
+      viewModel.onEvent(ClearResetButtonClick());
+      expect(viewModel.state.algorithmRunningStatus,
+          AlgorithmRunningStatus.stopped);
+      _expectEveryNodeIsNotVisitedAndNotPath(viewModel.state.grid);
+    });
+
+    test("from stopped to stopped", () {
+      viewModel.onEvent(ClearResetButtonClick());
       expect(viewModel.state.algorithmRunningStatus,
           AlgorithmRunningStatus.stopped);
       _expectEveryNodeIsUnvisited(viewModel.state.grid);
     });
 
-    test("from stopped to stopped", () {
-      viewModel.onEvent(StopResetButtonClick());
+    test("from finished to running", () {
+      viewModel.state.algorithmRunningStatus = AlgorithmRunningStatus.finished;
+      viewModel.onEvent(PlayPauseButtonClick());
+      expect(viewModel.state.algorithmRunningStatus,
+          AlgorithmRunningStatus.running);
+    });
+
+    test("from finished to stopped", () {
+      viewModel.state.algorithmRunningStatus = AlgorithmRunningStatus.finished;
+      viewModel.onEvent(ClearResetButtonClick());
       expect(viewModel.state.algorithmRunningStatus,
           AlgorithmRunningStatus.stopped);
-      _expectEveryNodeIsUnvisited(viewModel.state.grid);
+      _expectEveryNodeIsNotVisitedAndNotPath(viewModel.state.grid);
     });
   });
 
@@ -117,6 +133,15 @@ void _expectEveryNodeIsUnvisited(NodeGrid grid) {
   for (var row = 0; row < grid.length; row++) {
     for (var col = 0; col < grid.length; col++) {
       expect(grid[row][col].state, NodeState.unvisited);
+    }
+  }
+}
+
+void _expectEveryNodeIsNotVisitedAndNotPath(NodeGrid grid) {
+  for (var row = 0; row < grid.length; row++) {
+    for (var col = 0; col < grid.length; col++) {
+      expect(grid[row][col].state, isNot(NodeState.visited));
+      expect(grid[row][col].state, isNot(NodeState.path));
     }
   }
 }

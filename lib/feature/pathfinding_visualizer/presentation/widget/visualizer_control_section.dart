@@ -17,10 +17,10 @@ class VisualizerControlSection extends StatelessWidget {
       children: [
         ElevatedButton(
             onPressed: () {
-              model.onEvent(StopResetButtonClick());
+              model.onEvent(ClearResetButtonClick());
             },
-            child:
-                Text(_stopResetButtonText(model.state.algorithmRunningStatus))),
+            child: Text(
+                _clearResetButtonText(model.state.algorithmRunningStatus))),
         ElevatedButton(
           onPressed: () {
             model.onEvent(PlayPauseButtonClick());
@@ -45,19 +45,21 @@ class VisualizerControlSection extends StatelessWidget {
     switch (algorithmRunningStatus) {
       case AlgorithmRunningStatus.stopped:
       case AlgorithmRunningStatus.paused:
+      case AlgorithmRunningStatus.finished:
         return "Play";
       case AlgorithmRunningStatus.running:
         return "Pause";
     }
   }
 
-  String _stopResetButtonText(AlgorithmRunningStatus algorithmRunningStatus) {
+  String _clearResetButtonText(AlgorithmRunningStatus algorithmRunningStatus) {
     switch (algorithmRunningStatus) {
       case AlgorithmRunningStatus.stopped:
         return "Reset";
       case AlgorithmRunningStatus.running:
       case AlgorithmRunningStatus.paused:
-        return "Stop";
+      case AlgorithmRunningStatus.finished:
+        return "Clear";
     }
   }
 }
