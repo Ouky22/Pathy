@@ -4,26 +4,26 @@ import 'package:pathy/feature/pathfinding_visualizer/domain/model/no_path_to_tar
 import 'package:pathy/feature/pathfinding_visualizer/domain/model/node.dart';
 import 'package:pathy/feature/pathfinding_visualizer/domain/model/node_grid.dart';
 
+import 'path_finding_algorithm.dart';
 import 'model/node_state.dart';
 
-class Dijkstra {
+class Dijkstra extends PathFindingAlgorithm {
   final NodeGrid _grid;
   final Node _startNode;
   final Node _targetNode;
   final _nodeInfo = HashMap<Node, DijkstraNodeInfo>();
-  int _delayInMilliseconds;
   bool foundPath = false;
 
   Dijkstra({
     required NodeGrid grid,
-    required int delayInMilliseconds,
+    required super.delayInMilliseconds,
     required Node startNode,
     required Node targetNode,
-  })  : _grid = grid,
-        _delayInMilliseconds = delayInMilliseconds,
+  }) : _grid = grid,
         _startNode = startNode,
         _targetNode = targetNode;
 
+  @override
   Stream<NodeGrid> execute() async* {
     foundPath = false;
     _initializeNodeInfo();
@@ -55,7 +55,7 @@ class Dijkstra {
       } else {
         yield _grid;
         await Future<void>.delayed(
-            Duration(milliseconds: _delayInMilliseconds));
+            Duration(milliseconds: delayInMilliseconds));
       }
     }
   }
@@ -65,7 +65,7 @@ class Dijkstra {
     for (var node in shortestPath) {
       node.state = NodeState.path;
       yield _grid;
-      await Future<void>.delayed(Duration(milliseconds: _delayInMilliseconds));
+      await Future<void>.delayed(Duration(milliseconds: delayInMilliseconds));
     }
   }
 
@@ -154,10 +154,6 @@ class Dijkstra {
         }
       }
     }
-  }
-
-  set delayInMilliseconds(int delayInMilliseconds) {
-    _delayInMilliseconds = delayInMilliseconds;
   }
 }
 

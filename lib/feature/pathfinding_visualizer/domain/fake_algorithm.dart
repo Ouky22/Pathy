@@ -3,21 +3,17 @@ import 'dart:async';
 import 'package:pathy/feature/pathfinding_visualizer/domain/model/node_grid.dart';
 import 'package:pathy/feature/pathfinding_visualizer/domain/model/node_state.dart';
 
-class FakeAlgorithm {
+import 'path_finding_algorithm.dart';
+
+class FakeAlgorithm extends PathFindingAlgorithm {
   final NodeGrid _grid;
-
-  late int _delayInMilliseconds;
-
-  set delayInMilliseconds(int delayInMilliseconds) {
-    _delayInMilliseconds = delayInMilliseconds;
-  }
 
   FakeAlgorithm({
     required NodeGrid grid,
-    required int delayInMilliseconds,
-  })  : _grid = grid,
-        _delayInMilliseconds = delayInMilliseconds;
+    required super.delayInMilliseconds,
+  })  : _grid = grid;
 
+  @override
   Stream<NodeGrid> execute() async* {
     while (true) {
       for (var row = 0; row < _grid.length; row++) {
@@ -29,7 +25,7 @@ class FakeAlgorithm {
           }
           yield _grid;
           await Future<void>.delayed(
-              Duration(milliseconds: _delayInMilliseconds));
+              Duration(milliseconds: delayInMilliseconds));
         }
       }
     }
