@@ -146,6 +146,40 @@ void main() {
       expect(node.state, NodeState.unvisited);
     });
   });
+
+  group("select algorithm", () {
+    late VisualizerViewModel viewModel;
+
+    setUp(() {
+      viewModel = VisualizerViewModel();
+    });
+
+    test("select algorithm", () {
+      viewModel.onEvent(
+          SelectAlgorithm(algorithm: PathFindingAlgorithmSelection.dijkstra));
+      expect(viewModel.state.selectedAlgorithm,
+          PathFindingAlgorithmSelection.dijkstra);
+
+      viewModel.onEvent(
+          SelectAlgorithm(algorithm: PathFindingAlgorithmSelection.fake));
+      expect(viewModel.state.selectedAlgorithm,
+          PathFindingAlgorithmSelection.fake);
+    });
+
+    test("algorithm selection only possible when stopped", () {
+      viewModel.onEvent(
+          SelectAlgorithm(algorithm: PathFindingAlgorithmSelection.dijkstra));
+      expect(viewModel.state.selectedAlgorithm,
+          PathFindingAlgorithmSelection.dijkstra);
+
+      viewModel.onEvent(PlayPauseButtonClick()); // is running
+
+      viewModel.onEvent(
+          SelectAlgorithm(algorithm: PathFindingAlgorithmSelection.fake));
+      expect(viewModel.state.selectedAlgorithm,
+          PathFindingAlgorithmSelection.dijkstra);
+    });
+  });
 }
 
 void _expectEveryNodeIsUnvisited(NodeGrid grid) {

@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../visualizer_event.dart';
 import '../visualizer_state.dart';
+import 'algorithm_dropdown_menu.dart';
 
 class VisualizerControlSection extends StatelessWidget {
   const VisualizerControlSection({super.key});
@@ -37,6 +38,7 @@ class VisualizerControlSection extends StatelessWidget {
               model.onEvent(
                   ChangeAnimationSpeed(newSpeedLevelIndex: value.toInt()));
             }),
+        const AlgorithmDropdownMenu(),
       ],
     );
   }

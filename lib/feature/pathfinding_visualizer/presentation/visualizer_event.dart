@@ -1,3 +1,5 @@
+import 'package:pathy/feature/pathfinding_visualizer/presentation/visualizer_state.dart';
+
 sealed class VisualizerEvent {}
 
 class PlayPauseButtonClick implements VisualizerEvent {}
@@ -15,4 +17,10 @@ class ToggleWallNode implements VisualizerEvent {
   final int column;
 
   ToggleWallNode({required this.row, required this.column});
+}
+
+class SelectAlgorithm implements VisualizerEvent {
+  final PathFindingAlgorithmSelection algorithm;
+
+  SelectAlgorithm({required this.algorithm});
 }

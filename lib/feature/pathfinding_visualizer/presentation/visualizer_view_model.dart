@@ -1,13 +1,16 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
+import 'package:pathy/feature/pathfinding_visualizer/domain/path_finding_algorithm.dart';
 import 'package:pathy/feature/pathfinding_visualizer/domain/dijkstra.dart';
 import 'package:pathy/feature/pathfinding_visualizer/domain/model/no_path_to_target_exception.dart';
 import 'package:pathy/feature/pathfinding_visualizer/domain/model/node.dart';
 import 'package:pathy/feature/pathfinding_visualizer/domain/model/node_state.dart';
 import 'package:pathy/feature/pathfinding_visualizer/presentation/visualizer_event.dart';
 
+import '../domain/fake_algorithm.dart';
 import '../domain/model/algorithm_speed_level.dart';
+import '../domain/model/node_grid.dart';
 import 'visualizer_state.dart';
 
 class VisualizerViewModel extends ChangeNotifier {
@@ -18,7 +21,7 @@ class VisualizerViewModel extends ChangeNotifier {
 
   late final VisualizerState state;
 
-  late Dijkstra _algorithm;
+  late PathFindingAlgorithm _algorithm;
 
   StreamSubscription? _algorithmStreamSubscription;
 
@@ -52,6 +55,8 @@ class VisualizerViewModel extends ChangeNotifier {
         _onChangeAlgorithmAnimationSpeed(event.newSpeedLevelIndex);
       case ToggleWallNode event:
         _toggleWall(state.grid[event.row][event.column]);
+      case SelectAlgorithm event:
+        _onSelectAlgorithm(event.algorithm);
     }
   }
 
@@ -117,7 +122,7 @@ class VisualizerViewModel extends ChangeNotifier {
     _algorithmStreamSubscription?.cancel();
     _clearVisitedAndPathNodes();
 
-    var stream = _algorithm.execute();
+    var stream = _getStreamOfSelectedAlgorithm();
     _algorithmStreamSubscription = stream.listen(
       (newGridEvent) {
         notifyListeners();
@@ -175,6 +180,34 @@ class VisualizerViewModel extends ChangeNotifier {
     } else if (node.state == NodeState.unvisited) {
       node.state = NodeState.wall;
     }
+    notifyListeners();
+  }
+
+  Stream<NodeGrid> _getStreamOfSelectedAlgorithm() {
+    var delay = mapAlgorithmSpeedLevelToDelay(
+        AlgorithmSpeedLevel.values[maxSpeedLevelIndex - state.speedLevelIndex]);
+
+    switch (state.selectedAlgorithm) {
+      case PathFindingAlgorithmSelection.dijkstra:
+        _algorithm = Dijkstra(
+            grid: state.grid,
+            delayInMilliseconds: delay,
+            startNode: state.startNode,
+            targetNode: state.targetNode);
+      case PathFindingAlgorithmSelection.fake:
+        _algorithm =
+            FakeAlgorithm(grid: state.grid, delayInMilliseconds: delay);
+    }
+
+    return _algorithm.execute();
+  }
+
+  void _onSelectAlgorithm(PathFindingAlgorithmSelection algorithm) {
+    if (state.algorithmRunningStatus != AlgorithmRunningStatus.stopped) {
+      return;
+    }
+
+    state.selectedAlgorithm = algorithm;
     notifyListeners();
   }
 }

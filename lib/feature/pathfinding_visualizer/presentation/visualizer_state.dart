@@ -12,6 +12,12 @@ class VisualizerState {
   Node startNode;
   Node targetNode;
 
+  PathFindingAlgorithmSelection selectedAlgorithm =
+      PathFindingAlgorithmSelection.dijkstra;
+
+  bool algorithmSelectionEnabled() =>
+      algorithmRunningStatus == AlgorithmRunningStatus.stopped;
+
   VisualizerState({
     required this.grid,
     required this.speedLevelIndex,
@@ -26,4 +32,13 @@ enum AlgorithmRunningStatus {
   running,
   paused,
   finished,
+}
+
+enum PathFindingAlgorithmSelection {
+  dijkstra("Dijkstra"),
+  fake("Fake");
+
+  const PathFindingAlgorithmSelection(this.label);
+
+  final String label;
 }
