@@ -1,7 +1,19 @@
-import 'node_state.dart';
-
 class Node {
-  NodeState state;
+  bool visited;
 
-  Node({this.state = NodeState.unvisited});
+  bool isWall;
+
+  int costs;
+
+  int row, column;
+
+  Node? predecessor;
+
+  Node(
+      {required this.row,
+      required this.column,
+      this.visited = false,
+      this.isWall = false,
+      this.costs = 0x7FFFFFFFFFFFFFFF,
+      this.predecessor});
 }

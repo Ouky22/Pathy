@@ -3,4 +3,6 @@ enum NodeState {
   visited,
   wall,
   path,
+  start,
+  target,
 }

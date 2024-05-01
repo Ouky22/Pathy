@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pathy/feature/pathfinding_visualizer/domain/pathfinding_executor_service.dart';
 import 'package:pathy/feature/pathfinding_visualizer/presentation/visualizer_view_model.dart';
 import 'package:pathy/feature/pathfinding_visualizer/presentation/widget/visualizer_control_section.dart';
 import 'package:pathy/feature/pathfinding_visualizer/presentation/widget/visualizer_grid.dart';
@@ -10,7 +11,7 @@ class PathfindingVisualizerPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-        create: (context) => VisualizerViewModel(),
+        create: (context) => VisualizerViewModel(PathFindingExecutorService()),
         child: Consumer<VisualizerViewModel>(builder: (context, model, child) {
           return Column(
             mainAxisAlignment: MainAxisAlignment.center,

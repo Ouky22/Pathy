@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../domain/model/path_finding_algorithm_selection.dart';
 import '../visualizer_event.dart';
-import '../visualizer_state.dart';
 import '../visualizer_view_model.dart';
 
 class AlgorithmDropdownMenu extends StatelessWidget {

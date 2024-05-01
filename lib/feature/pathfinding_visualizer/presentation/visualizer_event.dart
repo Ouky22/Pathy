@@ -1,4 +1,4 @@
-import 'package:pathy/feature/pathfinding_visualizer/presentation/visualizer_state.dart';
+import '../domain/model/path_finding_algorithm_selection.dart';
 
 sealed class VisualizerEvent {}
 

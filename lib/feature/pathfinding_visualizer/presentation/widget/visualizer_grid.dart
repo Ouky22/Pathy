@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:pathy/feature/pathfinding_visualizer/presentation/visualizer_event.dart';
 import 'package:provider/provider.dart';
 
-import '../../domain/model/node.dart';
 import '../../domain/model/node_state.dart';
 import '../visualizer_view_model.dart';
 
@@ -31,11 +30,7 @@ class VisualizerGrid extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(
               border: Border.all(color: Colors.black, width: 0.3),
-              color: _determineNodeColor(
-                node: grid[gridRow][gridColumn],
-                startNode: model.state.startNode,
-                targetNode: model.state.targetNode,
-              ),
+              color: _determineNodeColor(nodeState: grid[gridRow][gridColumn]),
             ),
           ),
         );
@@ -43,16 +38,8 @@ class VisualizerGrid extends StatelessWidget {
     );
   }
 
-  Color _determineNodeColor(
-      {required Node node, required Node startNode, required Node targetNode}) {
-    if (node == startNode) {
-      return Colors.green;
-    } else if (node == targetNode) {
-      return Colors.red;
-    }
-
-    var color = Colors.white70;
-    switch (node.state) {
+  Color _determineNodeColor({required NodeState nodeState}) {
+    switch (nodeState) {
       case NodeState.visited:
         return Colors.teal;
       case NodeState.unvisited:
@@ -61,8 +48,10 @@ class VisualizerGrid extends StatelessWidget {
         return Colors.black38;
       case NodeState.path:
         return Colors.orangeAccent;
-      default:
-        return color;
+      case NodeState.start:
+        return Colors.green;
+      case NodeState.target:
+        return Colors.red;
     }
   }
 }

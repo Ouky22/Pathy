@@ -1,32 +1,23 @@
-import 'dart:collection';
-
 import 'package:pathy/feature/pathfinding_visualizer/domain/model/no_path_to_target_exception.dart';
 import 'package:pathy/feature/pathfinding_visualizer/domain/model/node.dart';
-import 'package:pathy/feature/pathfinding_visualizer/domain/model/node_grid.dart';
+import 'package:pathy/feature/pathfinding_visualizer/domain/model/node_state_change.dart';
 
 import 'path_finding_algorithm.dart';
 import 'model/node_state.dart';
 
 class Dijkstra extends PathFindingAlgorithm {
-  final NodeGrid _grid;
-  final Node _startNode;
-  final Node _targetNode;
-  final _nodeInfo = HashMap<Node, DijkstraNodeInfo>();
   bool foundPath = false;
 
-  Dijkstra({
-    required NodeGrid grid,
-    required super.delayInMilliseconds,
-    required Node startNode,
-    required Node targetNode,
-  }) : _grid = grid,
-        _startNode = startNode,
-        _targetNode = targetNode;
+  Dijkstra(
+      {required super.grid,
+      required super.startNode,
+      required super.targetNode,
+      required super.delayInMilliseconds});
 
   @override
-  Stream<NodeGrid> execute() async* {
+  Stream<NodeStateChange> execute() async* {
     foundPath = false;
-    _initializeNodeInfo();
+
     yield* _emitPathSearchSteps();
 
     if (foundPath) {
@@ -34,138 +25,67 @@ class Dijkstra extends PathFindingAlgorithm {
     }
   }
 
-  Stream<NodeGrid> _emitPathSearchSteps() async* {
+  Stream<NodeStateChange> _emitPathSearchSteps() async* {
+    Set<Node> nodes = {startNode};
+
     while (!foundPath) {
-      var currentlyVisitedNode = _getUnvisitedNodeWithLowestCost();
+      var currentlyVisitedNode = _getNodeWithLowestCost(nodes);
       if (currentlyVisitedNode == null) {
         throw NoPathToTargetException();
       }
+      nodes.remove(currentlyVisitedNode);
 
-      var neighbors = _getUnvisitedNeighborsOf(currentlyVisitedNode);
+      var neighbors = getUnvisitedNeighborsOf(currentlyVisitedNode);
       for (var neighbor in neighbors) {
-        var neighborNodeInfo = _nodeInfo[neighbor]!;
-        neighborNodeInfo.costs = _nodeInfo[currentlyVisitedNode]!.costs + 1;
-        neighborNodeInfo.predecessor = currentlyVisitedNode;
+        neighbor.costs = currentlyVisitedNode.costs + 1;
+        neighbor.predecessor = currentlyVisitedNode;
+        nodes.add(neighbor);
       }
 
-      currentlyVisitedNode.state = NodeState.visited;
+      currentlyVisitedNode.visited = true;
 
-      if (currentlyVisitedNode == _targetNode) {
+      if (currentlyVisitedNode == targetNode) {
         foundPath = true;
-      } else {
-        yield _grid;
-        await Future<void>.delayed(
-            Duration(milliseconds: delayInMilliseconds));
+      } else if (currentlyVisitedNode != startNode) {
+        yield NodeStateChange(NodeState.visited, currentlyVisitedNode.row,
+            currentlyVisitedNode.column);
+        await Future<void>.delayed(Duration(milliseconds: delayInMilliseconds));
       }
     }
   }
 
-  Stream<NodeGrid> _emitShortestPath() async* {
+  Stream<NodeStateChange> _emitShortestPath() async* {
     var shortestPath = _getShortestPath();
     for (var node in shortestPath) {
-      node.state = NodeState.path;
-      yield _grid;
-      await Future<void>.delayed(Duration(milliseconds: delayInMilliseconds));
+      if (node != startNode && node != targetNode) {
+        yield NodeStateChange(NodeState.path, node.row, node.column);
+        await Future<void>.delayed(Duration(milliseconds: delayInMilliseconds));
+      }
     }
   }
 
   List<Node> _getShortestPath() {
     var path = <Node>[];
-    var currentNode = _targetNode;
-    while (currentNode != _startNode) {
+    var currentNode = targetNode;
+    while (currentNode != startNode) {
       path.add(currentNode);
-      currentNode = _nodeInfo[currentNode]!.predecessor!;
+      currentNode = currentNode.predecessor!;
     }
-    path.add(_startNode);
+    path.add(startNode);
     return path.reversed.toList();
   }
 
-  List<Node> _getUnvisitedNeighborsOf(Node node) {
-    var neighbors = <Node>[];
-    var nodeInfo = _nodeInfo[node]!;
-    var row = nodeInfo.row;
-    var column = nodeInfo.column;
-    var maxRow = _grid.length - 1;
-    var maxColumn = _grid[0].length - 1;
-
-    var hasTopNeighbor =
-        row > 0 && _grid[row - 1][column].state == NodeState.unvisited;
-    if (hasTopNeighbor) {
-      neighbors.add(_grid[row - 1][column]);
-    }
-
-    var hasBottomNeighbor =
-        row < maxRow && _grid[row + 1][column].state == NodeState.unvisited;
-    if (hasBottomNeighbor) {
-      neighbors.add(_grid[row + 1][column]);
-    }
-
-    var hasLeftNeighbor =
-        column > 0 && _grid[row][column - 1].state == NodeState.unvisited;
-    if (hasLeftNeighbor) {
-      neighbors.add(_grid[row][column - 1]);
-    }
-
-    var hasRightNeighbor = column < maxColumn &&
-        _grid[row][column + 1].state == NodeState.unvisited;
-    if (hasRightNeighbor) {
-      neighbors.add(_grid[row][column + 1]);
-    }
-    return neighbors;
-  }
-
-  Node? _getUnvisitedNodeWithLowestCost() {
+  Node? _getNodeWithLowestCost(Set<Node> nodes) {
     var minCosts = 0x7FFFFFFFFFFFFFFF;
-    Node? unvisitedNodeWithLowestCost;
+    Node? nodeWithLowestCost;
 
-    for (var row = 0; row < _grid.length; row++) {
-      for (var col = 0; col < _grid[0].length; col++) {
-        var node = _grid[row][col];
-        var nodeInfo = _nodeInfo[node]!;
-        if (nodeInfo.costs < minCosts && node.state == NodeState.unvisited) {
-          minCosts = nodeInfo.costs;
-          unvisitedNodeWithLowestCost = node;
-        }
+    for (var node in nodes) {
+      if (node.costs < minCosts) {
+        minCosts = node.costs;
+        nodeWithLowestCost = node;
       }
     }
-    return unvisitedNodeWithLowestCost;
+
+    return nodeWithLowestCost;
   }
-
-  void _initializeNodeInfo() {
-    var maxIntValue = 0x7FFFFFFFFFFFFFFF;
-    for (var row = 0; row < _grid.length; row++) {
-      for (var col = 0; col < _grid[0].length; col++) {
-        var node = _grid[row][col];
-        if (node == _startNode) {
-          _nodeInfo[node] = DijkstraNodeInfo(
-            costs: 0,
-            predecessor: _startNode,
-            row: row,
-            column: col,
-          );
-          continue;
-        } else {
-          _nodeInfo[node] = DijkstraNodeInfo(
-            costs: maxIntValue,
-            predecessor: null,
-            row: row,
-            column: col,
-          );
-        }
-      }
-    }
-  }
-}
-
-class DijkstraNodeInfo {
-  int costs;
-  Node? predecessor;
-  int row;
-  int column;
-
-  DijkstraNodeInfo(
-      {required this.costs,
-      required this.predecessor,
-      required this.row,
-      required this.column});
 }
