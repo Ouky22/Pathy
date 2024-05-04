@@ -28,19 +28,19 @@ void main() {
 
       var expectedNodeStateChanges = [
         // ######### Path finding ##########
-        NodeStateChange(NodeState.visited, 1, 0),
-        NodeStateChange(NodeState.visited, 3, 0),
-        NodeStateChange(NodeState.visited, 0, 0),
-        NodeStateChange(NodeState.visited, 3, 1),
-        NodeStateChange(NodeState.visited, 0, 1),
-        NodeStateChange(NodeState.visited, 3, 2),
-        NodeStateChange(NodeState.visited, 0, 2),
+        const NodeStateChange(NodeState.visited, 1, 0),
+        const NodeStateChange(NodeState.visited, 3, 0),
+        const NodeStateChange(NodeState.visited, 0, 0),
+        const NodeStateChange(NodeState.visited, 3, 1),
+        const NodeStateChange(NodeState.visited, 0, 1),
+        const NodeStateChange(NodeState.visited, 3, 2),
+        const NodeStateChange(NodeState.visited, 0, 2),
 
         // ########## Found Path ###########
-        NodeStateChange(NodeState.path, 3, 0),
-        NodeStateChange(NodeState.path, 3, 1),
-        NodeStateChange(NodeState.path, 3, 2),
-        NodeStateChange(NodeState.path, 2, 2),
+        const NodeStateChange(NodeState.path, 3, 0),
+        const NodeStateChange(NodeState.path, 3, 1),
+        const NodeStateChange(NodeState.path, 3, 2),
+        const NodeStateChange(NodeState.path, 2, 2),
       ];
 
       var dijkstra = Dijkstra(
