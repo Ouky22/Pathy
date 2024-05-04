@@ -132,6 +132,48 @@ class PathFindingExecutorService {
     ]);
   }
 
+  void selectTargetNode(int row, int column) {
+    if (_pathFindingAlgorithmIsActive ||
+        _rowIsOutOfBounds(row) ||
+        _columnIsOutOfBounds(column)) {
+      return;
+    }
+
+    var node = _grid[row][column];
+    if (node.isWall || node == startNode) {
+      return;
+    }
+
+    var oldTargetNode = targetNode;
+    targetNode = node;
+    _gridStreamController.add([
+      NodeStateChange(NodeState.target, row, column),
+      NodeStateChange(
+          NodeState.unvisited, oldTargetNode.row, oldTargetNode.column)
+    ]);
+  }
+
+  void selectStartNode(int row, int column) {
+    if (_pathFindingAlgorithmIsActive ||
+        _rowIsOutOfBounds(row) ||
+        _columnIsOutOfBounds(column)) {
+      return;
+    }
+
+    var node = _grid[row][column];
+    if (node.isWall || node == targetNode) {
+      return;
+    }
+
+    var oldStartNode = startNode;
+    startNode = node;
+    _gridStreamController.add([
+      NodeStateChange(NodeState.start, row, column),
+      NodeStateChange(
+          NodeState.unvisited, oldStartNode.row, oldStartNode.column)
+    ]);
+  }
+
   void selectAlgorithm(PathFindingAlgorithmSelection algorithm) {
     _selectedAlgorithm = algorithm;
   }
@@ -184,4 +226,8 @@ class PathFindingExecutorService {
             targetNode: targetNode);
     }
   }
+
+  bool _rowIsOutOfBounds(int row) => row < 0 || row >= rows;
+
+  bool _columnIsOutOfBounds(int column) => column < 0 || column >= columns;
 }
