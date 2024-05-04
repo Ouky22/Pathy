@@ -3,7 +3,7 @@ import 'package:pathy/feature/pathfinding_visualizer/domain/model/node.dart';
 import 'package:pathy/feature/pathfinding_visualizer/domain/model/node_state_change.dart';
 
 import 'path_finding_algorithm.dart';
-import 'model/node_state.dart';
+import '../model/node_state.dart';
 
 class Dijkstra extends PathFindingAlgorithm {
   bool foundPath = false;

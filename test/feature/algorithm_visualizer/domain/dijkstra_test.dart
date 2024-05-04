@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pathy/feature/pathfinding_visualizer/domain/dijkstra.dart';
+import 'package:pathy/feature/pathfinding_visualizer/domain/path_finding_algorithm/dijkstra.dart';
 import 'package:pathy/feature/pathfinding_visualizer/domain/model/no_path_to_target_exception.dart';
 import 'package:pathy/feature/pathfinding_visualizer/domain/model/node.dart';
 import 'package:pathy/feature/pathfinding_visualizer/domain/model/node_state.dart';

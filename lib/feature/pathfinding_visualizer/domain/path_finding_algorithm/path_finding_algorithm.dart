@@ -1,7 +1,7 @@
 import 'package:pathy/feature/pathfinding_visualizer/domain/model/node.dart';
 import 'package:pathy/feature/pathfinding_visualizer/domain/model/node_state_change.dart';
 
-import 'model/node_grid.dart';
+import '../model/node_grid.dart';
 
 abstract class PathFindingAlgorithm {
   late final List<List<Node>> grid;

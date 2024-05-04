@@ -1,12 +1,12 @@
 import 'dart:async';
 
-import 'package:pathy/feature/pathfinding_visualizer/domain/dijkstra.dart';
+import 'package:pathy/feature/pathfinding_visualizer/domain/path_finding_algorithm/dijkstra.dart';
 import 'package:pathy/feature/pathfinding_visualizer/domain/model/algorithm_speed_level.dart';
 import 'package:pathy/feature/pathfinding_visualizer/domain/model/node.dart';
 import 'package:pathy/feature/pathfinding_visualizer/domain/model/node_state_change.dart';
-import 'package:pathy/feature/pathfinding_visualizer/domain/path_finding_algorithm.dart';
+import 'package:pathy/feature/pathfinding_visualizer/domain/path_finding_algorithm/path_finding_algorithm.dart';
 
-import 'fake_algorithm.dart';
+import 'path_finding_algorithm/fake_algorithm.dart';
 import 'model/no_path_to_target_exception.dart';
 import 'model/node_grid.dart';
 import 'model/node_state.dart';
