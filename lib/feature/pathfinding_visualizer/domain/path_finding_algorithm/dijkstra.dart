@@ -37,9 +37,12 @@ class Dijkstra extends PathFindingAlgorithm {
 
       var neighbors = getUnvisitedNeighborsOf(currentlyVisitedNode);
       for (var neighbor in neighbors) {
-        neighbor.costs = currentlyVisitedNode.costs + 1;
-        neighbor.predecessor = currentlyVisitedNode;
-        nodes.add(neighbor);
+        var newCosts = currentlyVisitedNode.costs + 1;
+        if (newCosts < neighbor.costs) {
+          neighbor.costs = newCosts;
+          neighbor.predecessor = currentlyVisitedNode;
+          nodes.add(neighbor);
+        }
       }
 
       currentlyVisitedNode.visited = true;
