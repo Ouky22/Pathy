@@ -183,9 +183,9 @@ void main() {
           .called(1);
 
       viewModel.onEvent(
-          SelectAlgorithm(algorithm: PathFindingAlgorithmSelection.fake));
+          SelectAlgorithm(algorithm: PathFindingAlgorithmSelection.aStar));
       verify(pathFindingExecutorService
-          .selectAlgorithm(PathFindingAlgorithmSelection.fake))
+          .selectAlgorithm(PathFindingAlgorithmSelection.aStar))
           .called(1);
     });
 
@@ -196,9 +196,9 @@ void main() {
       viewModel.onEvent(PlayPauseButtonClick()); // is running
 
       viewModel.onEvent(
-          SelectAlgorithm(algorithm: PathFindingAlgorithmSelection.fake));
+          SelectAlgorithm(algorithm: PathFindingAlgorithmSelection.aStar));
       verifyNever(pathFindingExecutorService
-          .selectAlgorithm(PathFindingAlgorithmSelection.fake));
+          .selectAlgorithm(PathFindingAlgorithmSelection.aStar));
     });
   });
 }

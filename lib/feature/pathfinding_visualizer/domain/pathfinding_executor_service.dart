@@ -7,7 +7,6 @@ import 'package:pathy/feature/pathfinding_visualizer/domain/model/node.dart';
 import 'package:pathy/feature/pathfinding_visualizer/domain/model/node_state_change.dart';
 import 'package:pathy/feature/pathfinding_visualizer/domain/path_finding_algorithm/path_finding_algorithm.dart';
 
-import 'path_finding_algorithm/fake_algorithm.dart';
 import 'model/no_path_to_target_exception.dart';
 import 'model/node_grid.dart';
 import 'model/node_state.dart';
@@ -215,12 +214,6 @@ class PathFindingExecutorService {
     switch (_selectedAlgorithm) {
       case PathFindingAlgorithmSelection.dijkstra:
         return Dijkstra(
-            delayInMilliseconds: _algorithmAnimationSpeed.delay,
-            grid: _grid,
-            startNode: startNode,
-            targetNode: targetNode);
-      case PathFindingAlgorithmSelection.fake:
-        return FakeAlgorithm(
             delayInMilliseconds: _algorithmAnimationSpeed.delay,
             grid: _grid,
             startNode: startNode,

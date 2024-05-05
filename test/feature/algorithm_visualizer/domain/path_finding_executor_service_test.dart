@@ -234,8 +234,8 @@ void main() {
         PathFindingAlgorithmSelection.dijkstra);
 
     pathFindingExecutorService
-        .selectAlgorithm(PathFindingAlgorithmSelection.fake);
+        .selectAlgorithm(PathFindingAlgorithmSelection.aStar);
     expect(pathFindingExecutorService.selectedAlgorithm,
-        PathFindingAlgorithmSelection.fake);
+        PathFindingAlgorithmSelection.aStar);
   });
 }
