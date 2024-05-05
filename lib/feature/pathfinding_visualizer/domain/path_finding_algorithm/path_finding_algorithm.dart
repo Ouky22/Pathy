@@ -2,6 +2,7 @@ import 'package:pathy/feature/pathfinding_visualizer/domain/model/node.dart';
 import 'package:pathy/feature/pathfinding_visualizer/domain/model/node_state_change.dart';
 
 import '../model/node_grid.dart';
+import '../model/node_state.dart';
 
 abstract class PathFindingAlgorithm {
   late final List<List<Node>> grid;
@@ -50,6 +51,41 @@ abstract class PathFindingAlgorithm {
     }
 
     return neighbors;
+  }
+
+  Node? getNodeWithLowestCost(Set<Node> nodes) {
+    var minCosts = 0x7FFFFFFFFFFFFFFF;
+    Node? nodeWithLowestCost;
+
+    for (var node in nodes) {
+      if (node.costs < minCosts) {
+        minCosts = node.costs;
+        nodeWithLowestCost = node;
+      }
+    }
+
+    return nodeWithLowestCost;
+  }
+
+  Stream<NodeStateChange> emitShortestPath() async* {
+    var shortestPath = getShortestPath();
+    for (var node in shortestPath) {
+      if (node != startNode && node != targetNode) {
+        yield NodeStateChange(NodeState.path, node.row, node.column);
+        await Future<void>.delayed(Duration(milliseconds: delayInMilliseconds));
+      }
+    }
+  }
+
+  List<Node> getShortestPath() {
+    var path = <Node>[];
+    var currentNode = targetNode;
+    while (currentNode != startNode) {
+      path.add(currentNode);
+      currentNode = currentNode.predecessor!;
+    }
+    path.add(startNode);
+    return path.reversed.toList();
   }
 
   bool _isUnvisitedNeighbor(Node node) => !node.visited && !node.isWall;

@@ -21,7 +21,7 @@ class Dijkstra extends PathFindingAlgorithm {
     yield* _emitPathSearchSteps();
 
     if (foundPath) {
-      yield* _emitShortestPath();
+      yield* emitShortestPath();
     }
   }
 
@@ -29,7 +29,7 @@ class Dijkstra extends PathFindingAlgorithm {
     Set<Node> nodes = {startNode};
 
     while (!foundPath) {
-      var currentlyVisitedNode = _getNodeWithLowestCost(nodes);
+      var currentlyVisitedNode = getNodeWithLowestCost(nodes);
       if (currentlyVisitedNode == null) {
         throw NoPathToTargetException();
       }
@@ -52,40 +52,5 @@ class Dijkstra extends PathFindingAlgorithm {
         await Future<void>.delayed(Duration(milliseconds: delayInMilliseconds));
       }
     }
-  }
-
-  Stream<NodeStateChange> _emitShortestPath() async* {
-    var shortestPath = _getShortestPath();
-    for (var node in shortestPath) {
-      if (node != startNode && node != targetNode) {
-        yield NodeStateChange(NodeState.path, node.row, node.column);
-        await Future<void>.delayed(Duration(milliseconds: delayInMilliseconds));
-      }
-    }
-  }
-
-  List<Node> _getShortestPath() {
-    var path = <Node>[];
-    var currentNode = targetNode;
-    while (currentNode != startNode) {
-      path.add(currentNode);
-      currentNode = currentNode.predecessor!;
-    }
-    path.add(startNode);
-    return path.reversed.toList();
-  }
-
-  Node? _getNodeWithLowestCost(Set<Node> nodes) {
-    var minCosts = 0x7FFFFFFFFFFFFFFF;
-    Node? nodeWithLowestCost;
-
-    for (var node in nodes) {
-      if (node.costs < minCosts) {
-        minCosts = node.costs;
-        nodeWithLowestCost = node;
-      }
-    }
-
-    return nodeWithLowestCost;
   }
 }
