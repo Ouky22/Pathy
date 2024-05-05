@@ -106,6 +106,7 @@ abstract class PathFindingAlgorithm {
               if (node == startNode) {
                 this.startNode = copiedNode;
                 this.startNode.costs = 0;
+                this.startNode.heuristic = 0;
                 this.startNode.predecessor = this.startNode;
               } else if (node == targetNode) {
                 this.targetNode = copiedNode;

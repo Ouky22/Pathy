@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:pathy/feature/pathfinding_visualizer/domain/path_finding_algorithm/a_star.dart';
 import 'package:pathy/feature/pathfinding_visualizer/domain/path_finding_algorithm/dijkstra.dart';
 import 'package:pathy/feature/pathfinding_visualizer/domain/model/algorithm_speed_level.dart';
 import 'package:pathy/feature/pathfinding_visualizer/domain/model/node.dart';
@@ -220,6 +221,12 @@ class PathFindingExecutorService {
             targetNode: targetNode);
       case PathFindingAlgorithmSelection.fake:
         return FakeAlgorithm(
+            delayInMilliseconds: _algorithmAnimationSpeed.delay,
+            grid: _grid,
+            startNode: startNode,
+            targetNode: targetNode);
+      case PathFindingAlgorithmSelection.aStar:
+        return AStar(
             delayInMilliseconds: _algorithmAnimationSpeed.delay,
             grid: _grid,
             startNode: startNode,

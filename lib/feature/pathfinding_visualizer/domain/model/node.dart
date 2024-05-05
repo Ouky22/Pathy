@@ -3,7 +3,7 @@ class Node {
 
   bool isWall;
 
-  int costs;
+  int costs, heuristic;
 
   int row, column;
 
@@ -15,5 +15,6 @@ class Node {
       this.visited = false,
       this.isWall = false,
       this.costs = 0x7FFFFFFFFFFFFFFF,
+      this.heuristic = 0x7FFFFFFFFFFFFFFF,
       this.predecessor});
 }
