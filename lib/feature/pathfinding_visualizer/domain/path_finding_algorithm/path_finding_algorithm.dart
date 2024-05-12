@@ -54,7 +54,7 @@ abstract class PathFindingAlgorithm {
   }
 
   Node? getNodeWithLowestCost(Set<Node> nodes) {
-    var minCosts = 0x7FFFFFFFFFFFFFFF;
+    var minCosts = 0x7FFFFFFFFFFFF;
     Node? nodeWithLowestCost;
 
     for (var node in nodes) {

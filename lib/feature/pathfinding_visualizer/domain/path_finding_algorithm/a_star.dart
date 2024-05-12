@@ -64,7 +64,7 @@ class AStar extends PathFindingAlgorithm {
   }
 
   Node? _getNodeWithLowestHeuristicCosts(Set<Node> nodes) {
-    var minHeuristicCosts = 0x7FFFFFFFFFFFFFFF;
+    var minHeuristicCosts = 0x7FFFFFFFFFFFF;
     Node? nodeWithLowestCost;
 
     for (var node in nodes) {

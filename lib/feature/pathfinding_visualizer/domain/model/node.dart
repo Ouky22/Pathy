@@ -14,7 +14,7 @@ class Node {
       required this.column,
       this.visited = false,
       this.isWall = false,
-      this.costs = 0x7FFFFFFFFFFFFFFF,
-      this.heuristic = 0x7FFFFFFFFFFFFFFF,
+      this.costs = 0x7FFFFFFFFFFFF,
+      this.heuristic = 0x7FFFFFFFFFFFF,
       this.predecessor});
 }
