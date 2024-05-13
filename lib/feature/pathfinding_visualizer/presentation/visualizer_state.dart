@@ -20,6 +20,10 @@ class VisualizerState {
     required this.speedLevelIndex,
     this.algorithmRunningStatus = AlgorithmRunningStatus.stopped,
   });
+
+  int get rows => grid.length;
+
+  int get columns => grid[0].length;
 }
 
 enum AlgorithmRunningStatus {

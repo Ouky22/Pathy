@@ -24,3 +24,10 @@ class SelectAlgorithm implements VisualizerEvent {
 
   SelectAlgorithm({required this.algorithm});
 }
+
+class GridSizeChanged implements VisualizerEvent {
+  final double newWidth;
+  final double newHeight;
+
+  GridSizeChanged({required this.newWidth, required this.newHeight});
+}

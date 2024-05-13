@@ -185,7 +185,7 @@ void main() {
       viewModel.onEvent(
           SelectAlgorithm(algorithm: PathFindingAlgorithmSelection.aStar));
       verify(pathFindingExecutorService
-          .selectAlgorithm(PathFindingAlgorithmSelection.aStar))
+              .selectAlgorithm(PathFindingAlgorithmSelection.aStar))
           .called(1);
     });
 
@@ -199,6 +199,58 @@ void main() {
           SelectAlgorithm(algorithm: PathFindingAlgorithmSelection.aStar));
       verifyNever(pathFindingExecutorService
           .selectAlgorithm(PathFindingAlgorithmSelection.aStar));
+    });
+  });
+
+  group("resize grd", () {
+    late VisualizerViewModel viewModel;
+    late PathFindingExecutorService pathFindingExecutorService;
+
+    setUp(() {
+      pathFindingExecutorService = MockPathFindingExecutorService();
+      viewModel = VisualizerViewModel(pathFindingExecutorService);
+    });
+
+    test("when new rows and new columns equals old ones then no resize", () {
+      var rows = 15;
+      var columns = 25;
+      when(pathFindingExecutorService.rows).thenReturn(rows);
+      when(pathFindingExecutorService.columns).thenReturn(columns);
+
+      var oldHeight = rows * VisualizerViewModel.cellSize;
+      var oldWidth = columns * VisualizerViewModel.cellSize;
+      viewModel
+          .onEvent(GridSizeChanged(newWidth: oldWidth, newHeight: oldHeight));
+
+      verifyNever(pathFindingExecutorService.resizeGrid(rows, columns));
+    });
+
+    test("resize grid", () {
+      var rows = 15;
+      var columns = 25;
+      when(pathFindingExecutorService.rows).thenReturn(rows);
+      when(pathFindingExecutorService.columns).thenReturn(columns);
+
+      var newHeight = VisualizerViewModel.cellSize * 2;
+      var newWidth = VisualizerViewModel.cellSize * 2;
+      viewModel
+          .onEvent(GridSizeChanged(newWidth: newWidth, newHeight: newHeight));
+
+      verify(pathFindingExecutorService.resizeGrid(2, 2)).called(1);
+    });
+
+    test("when path finding is running then stop it", () {
+      var rows = 15;
+      var columns = 25;
+      when(pathFindingExecutorService.rows).thenReturn(rows);
+      when(pathFindingExecutorService.columns).thenReturn(columns);
+
+      viewModel.onEvent(PlayPauseButtonClick());
+      viewModel.onEvent(GridSizeChanged(newWidth: 100, newHeight: 100));
+
+      verify(pathFindingExecutorService.stopPathFinding()).called(1);
+      expect(viewModel.state.algorithmRunningStatus,
+          AlgorithmRunningStatus.stopped);
     });
   });
 }

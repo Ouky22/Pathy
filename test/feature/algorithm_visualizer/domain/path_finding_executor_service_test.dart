@@ -238,4 +238,114 @@ void main() {
     expect(pathFindingExecutorService.selectedAlgorithm,
         PathFindingAlgorithmSelection.aStar);
   });
+
+  group("resize grid", () {
+    late PathFindingExecutorService pathFindingExecutorService;
+
+    setUp(() {
+      pathFindingExecutorService = PathFindingExecutorService();
+    });
+
+    test("when new rows are less than minimum rows then no resize", () {
+      var initialRows = pathFindingExecutorService.rows;
+      var initialColumns = pathFindingExecutorService.columns;
+
+      pathFindingExecutorService.resizeGrid(
+          pathFindingExecutorService.minRows - 1,
+          pathFindingExecutorService.minColumns);
+
+      expect(pathFindingExecutorService.rows, initialRows);
+      expect(pathFindingExecutorService.columns, initialColumns);
+    });
+
+    test("when new columns are less than minimum columns then no resize", () {
+      var initialRows = pathFindingExecutorService.rows;
+      var initialColumns = pathFindingExecutorService.columns;
+
+      pathFindingExecutorService.resizeGrid(pathFindingExecutorService.minRows,
+          pathFindingExecutorService.minColumns - 1);
+
+      expect(pathFindingExecutorService.rows, initialRows);
+      expect(pathFindingExecutorService.columns, initialColumns);
+    });
+
+    test("resize grid", () {
+      var initialRows = pathFindingExecutorService.rows;
+      var initialColumns = pathFindingExecutorService.columns;
+
+      pathFindingExecutorService.resizeGrid(
+          initialRows + 1, initialColumns + 1);
+
+      expect(pathFindingExecutorService.rows, initialRows + 1);
+      expect(pathFindingExecutorService.columns, initialColumns + 1);
+    });
+
+    test("when algorithm is active then no resize", () {
+      var initialRows = pathFindingExecutorService.rows;
+      var initialColumns = pathFindingExecutorService.columns;
+
+      pathFindingExecutorService.startNewPathFinding();
+      pathFindingExecutorService.resizeGrid(
+          initialRows + 1, initialColumns + 1);
+
+      expect(pathFindingExecutorService.rows, initialRows);
+      expect(pathFindingExecutorService.columns, initialColumns);
+    });
+
+    test("when target node outside new resized grid then move target node", () {
+      var initialRows = pathFindingExecutorService.rows;
+      var initialColumns = pathFindingExecutorService.columns;
+      var targetRow = initialRows - 1;
+      var targetCol = initialColumns - 1;
+
+      pathFindingExecutorService.selectTargetNode(targetRow, targetCol);
+      pathFindingExecutorService.resizeGrid(
+          initialRows - 1, initialColumns - 1);
+
+      expect(
+          pathFindingExecutorService.nodeStateGrid[initialRows - 2]
+              [initialColumns - 2],
+          NodeState.target);
+    });
+
+    test("when start node outside new resized grid then move start node", () {
+      var initialRows = pathFindingExecutorService.rows;
+      var initialColumns = pathFindingExecutorService.columns;
+      var startRow = initialRows - 1;
+      var startCol = initialColumns - 1;
+
+      pathFindingExecutorService.selectStartNode(startRow, startCol);
+      pathFindingExecutorService.resizeGrid(
+          initialRows - 1, initialColumns - 1);
+
+      expect(
+          pathFindingExecutorService.nodeStateGrid[initialRows - 2]
+              [initialColumns - 2],
+          NodeState.start);
+    });
+
+    test("when moving start node than it should not overlap with target node",
+        () {
+      var initialRows = pathFindingExecutorService.rows;
+      var initialColumns = pathFindingExecutorService.columns;
+      var startRow = initialRows - 1;
+      var startCol = initialColumns - 1;
+      var targetRow = initialRows - 2;
+      var targetCol = initialColumns - 2;
+
+      pathFindingExecutorService.selectStartNode(startRow, startCol);
+      pathFindingExecutorService.selectTargetNode(targetRow, targetCol);
+      pathFindingExecutorService.resizeGrid(
+          initialRows - 1, initialColumns - 1);
+
+      expect(
+          pathFindingExecutorService.nodeStateGrid[initialRows - 2]
+              [initialColumns - 2],
+          NodeState.target);
+      expect(
+          pathFindingExecutorService.nodeStateGrid[initialRows - 3]
+              [initialColumns - 2],
+          NodeState.start);
+    });
+  });
 }

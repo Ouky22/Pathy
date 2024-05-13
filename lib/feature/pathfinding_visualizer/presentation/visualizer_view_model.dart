@@ -7,10 +7,9 @@ import '../domain/model/path_finding_algorithm_selection.dart';
 import 'visualizer_state.dart';
 
 class VisualizerViewModel extends ChangeNotifier {
-  static const int rows = PathFindingExecutorService.rows;
-  static const int cols = PathFindingExecutorService.columns;
   static int minSpeedLevelIndex = 0;
   static int maxSpeedLevelIndex = AlgorithmSpeedLevel.values.length - 1;
+  static const double cellSize = 32.0;
 
   late final PathFindingExecutorService _pathFindingExecutorService;
 
@@ -37,6 +36,8 @@ class VisualizerViewModel extends ChangeNotifier {
 
   void onEvent(VisualizerEvent event) {
     switch (event) {
+      case GridSizeChanged event:
+        _onGridSizeChanged(event.newWidth, event.newHeight);
       case PlayPauseButtonClick _:
         _onPlayPauseButtonClick();
       case ClearResetButtonClick _:
@@ -142,5 +143,22 @@ class VisualizerViewModel extends ChangeNotifier {
     _pathFindingExecutorService.selectAlgorithm(algorithm);
     state.selectedAlgorithm = _pathFindingExecutorService.selectedAlgorithm;
     notifyListeners();
+  }
+
+  void _onGridSizeChanged(double newWidth, double newHeight) {
+    final newColumns = (newWidth / cellSize).floor();
+    final newRows = (newHeight / cellSize).floor();
+
+    if (newRows == _pathFindingExecutorService.rows &&
+        newColumns == _pathFindingExecutorService.columns) {
+      return;
+    }
+
+    if (state.algorithmRunningStatus == AlgorithmRunningStatus.running) {
+      _pathFindingExecutorService.stopPathFinding();
+      state.algorithmRunningStatus = AlgorithmRunningStatus.stopped;
+    }
+    _pathFindingExecutorService.resizeGrid(newRows, newColumns);
+    state.grid = _pathFindingExecutorService.nodeStateGrid;
   }
 }

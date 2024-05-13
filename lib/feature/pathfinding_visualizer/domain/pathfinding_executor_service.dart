@@ -13,13 +13,15 @@ import 'model/node_state.dart';
 import 'model/path_finding_algorithm_selection.dart';
 
 class PathFindingExecutorService {
-  static const int rows = 20;
-  static const int columns = 35;
+  final int _initialRows = 15;
+  final int _initialColumns = 25;
+  final int minRows = 5;
+  final int minColumns = 5;
 
-  final NodeGrid _grid = List.generate(
-      rows,
-      (row) =>
-          List<Node>.generate(columns, (col) => Node(row: row, column: col)));
+  late NodeGrid _grid = List.generate(
+      _initialRows,
+      (row) => List<Node>.generate(
+          _initialColumns, (col) => Node(row: row, column: col)));
 
   late Node startNode;
   late Node targetNode;
@@ -51,6 +53,10 @@ class PathFindingExecutorService {
       _finishedEventStreamController.stream;
 
   PathFindingAlgorithmSelection get selectedAlgorithm => _selectedAlgorithm;
+
+  int get rows => _grid.length;
+
+  int get columns => _grid[0].length;
 
   List<List<NodeState>> get nodeStateGrid => _grid
       .map((row) => row.map((node) {
@@ -208,6 +214,76 @@ class PathFindingExecutorService {
       }
     }
     _gridStreamController.add(nodeStateChanges);
+  }
+
+  void resizeGrid(int newRows, int newColumns) {
+    var currentRows = rows;
+    var currentColumns = columns;
+    if (newRows == currentRows && newColumns == currentColumns ||
+        newRows < minRows ||
+        newColumns < minColumns) {
+      return;
+    }
+
+    if (_pathFindingAlgorithmIsActive) {
+      return;
+    }
+
+    _grid = _createGridWithNewGridSize(newRows, newColumns);
+    _moveStartNodeIfOutsideOfGrid(newRows, newColumns);
+    _moveTargetNodeIfOutsideOfGrid(newRows, newColumns);
+  }
+
+  NodeGrid _createGridWithNewGridSize(int newRows, int newColumns) {
+    return List.generate(
+        newRows,
+        (rowIndex) => List<Node>.generate(newColumns, (colIndex) {
+              if (rowIndex < rows && colIndex < columns) {
+                // use existing nodes from old grid
+                return _grid[rowIndex][colIndex];
+              } else {
+                // new grid size is bigger so create new nodes
+                return Node(row: rowIndex, column: colIndex);
+              }
+            }));
+  }
+
+  void _moveTargetNodeIfOutsideOfGrid(int newRows, int newColumns) {
+    var newTargetNodeRow = targetNode.row;
+    var newTargetNodeColumn = targetNode.column;
+    if (targetNode.row >= newRows) {
+      newTargetNodeRow = newRows - 1;
+    }
+    if (targetNode.column >= newColumns) {
+      newTargetNodeColumn = newColumns - 1;
+    }
+    // so that target node is not on start node
+    if (newTargetNodeRow == startNode.row &&
+        newTargetNodeColumn == startNode.column) {
+      newTargetNodeRow--;
+    }
+    targetNode = _grid[newTargetNodeRow][newTargetNodeColumn];
+    targetNode.isWall = false;
+    targetNode.visited = false;
+  }
+
+  void _moveStartNodeIfOutsideOfGrid(int newRows, int newColumns) {
+    var newStartNodeRow = startNode.row;
+    var newStartNodeColumn = startNode.column;
+    if (startNode.row >= newRows) {
+      newStartNodeRow = newRows - 1;
+    }
+    if (startNode.column >= newColumns) {
+      newStartNodeColumn = newColumns - 1;
+    }
+    // so that start node is not on target node
+    if (newStartNodeRow == targetNode.row &&
+        newStartNodeColumn == targetNode.column) {
+      newStartNodeRow--;
+    }
+    startNode = _grid[newStartNodeRow][newStartNodeColumn];
+    startNode.isWall = false;
+    startNode.visited = false;
   }
 
   PathFindingAlgorithm _createSelectedAlgorithm() {

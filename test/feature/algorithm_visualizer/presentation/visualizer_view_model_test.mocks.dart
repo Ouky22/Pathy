@@ -48,6 +48,20 @@ class _FakeNode_0 extends _i1.SmartFake implements _i2.Node {
 class MockPathFindingExecutorService extends _i1.Mock
     implements _i3.PathFindingExecutorService {
   @override
+  int get minRows => (super.noSuchMethod(
+        Invocation.getter(#minRows),
+        returnValue: 0,
+        returnValueForMissingStub: 0,
+      ) as int);
+
+  @override
+  int get minColumns => (super.noSuchMethod(
+        Invocation.getter(#minColumns),
+        returnValue: 0,
+        returnValueForMissingStub: 0,
+      ) as int);
+
+  @override
   _i2.Node get startNode => (super.noSuchMethod(
         Invocation.getter(#startNode),
         returnValue: _FakeNode_0(
@@ -114,6 +128,20 @@ class MockPathFindingExecutorService extends _i1.Mock
         returnValue: _i6.PathFindingAlgorithmSelection.dijkstra,
         returnValueForMissingStub: _i6.PathFindingAlgorithmSelection.dijkstra,
       ) as _i6.PathFindingAlgorithmSelection);
+
+  @override
+  int get rows => (super.noSuchMethod(
+        Invocation.getter(#rows),
+        returnValue: 0,
+        returnValueForMissingStub: 0,
+      ) as int);
+
+  @override
+  int get columns => (super.noSuchMethod(
+        Invocation.getter(#columns),
+        returnValue: 0,
+        returnValueForMissingStub: 0,
+      ) as int);
 
   @override
   List<List<_i7.NodeState>> get nodeStateGrid => (super.noSuchMethod(
@@ -185,6 +213,38 @@ class MockPathFindingExecutorService extends _i1.Mock
       );
 
   @override
+  void selectTargetNode(
+    int? row,
+    int? column,
+  ) =>
+      super.noSuchMethod(
+        Invocation.method(
+          #selectTargetNode,
+          [
+            row,
+            column,
+          ],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void selectStartNode(
+    int? row,
+    int? column,
+  ) =>
+      super.noSuchMethod(
+        Invocation.method(
+          #selectStartNode,
+          [
+            row,
+            column,
+          ],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
   void selectAlgorithm(_i6.PathFindingAlgorithmSelection? algorithm) =>
       super.noSuchMethod(
         Invocation.method(
@@ -208,6 +268,22 @@ class MockPathFindingExecutorService extends _i1.Mock
         Invocation.method(
           #clearVisitedAndPathNodes,
           [],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void resizeGrid(
+    int? newRows,
+    int? newColumns,
+  ) =>
+      super.noSuchMethod(
+        Invocation.method(
+          #resizeGrid,
+          [
+            newRows,
+            newColumns,
+          ],
         ),
         returnValueForMissingStub: null,
       );
