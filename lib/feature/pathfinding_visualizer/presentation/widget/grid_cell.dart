@@ -6,15 +6,23 @@ import '../../domain/model/node_state.dart';
 class GridCell extends StatelessWidget {
   final NodeState nodeState;
 
-  final void Function() onToggleWallNode;
+  final void Function() onTab;
+
+  final void Function(Offset globalPosition) onPanUpdate;
+
+  final void Function() onPanStart;
+  final void Function() onPanEnd;
 
   const GridCell(
-      {super.key, required this.nodeState, required this.onToggleWallNode});
+      {super.key, required this.nodeState, required this.onTab, required this.onPanUpdate, required this.onPanStart, required this.onPanEnd});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => onToggleWallNode(),
+      onTap: () => onTab(),
+      onPanUpdate: (details) => onPanUpdate(details.globalPosition),
+      onPanStart: (details) => onPanStart(),
+      onPanEnd: (details) => onPanEnd(),
       child: Container(
         height: cellSize,
         width: cellSize,

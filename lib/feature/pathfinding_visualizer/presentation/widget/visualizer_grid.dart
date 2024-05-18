@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:pathy/feature/pathfinding_visualizer/domain/model/node_state.dart';
 import 'package:pathy/feature/pathfinding_visualizer/presentation/widget/grid_cell.dart';
 import '../../../../constants.dart';
 import '../visualizer_event.dart';
@@ -26,13 +27,13 @@ class VisualizerGrid extends StatelessWidget {
 
       // padding must be defined depending on the screen size so that the grid is always rectangular
       final horizontalPadding =
-          max(constraints.maxWidth - (columns * cellSize), 0);
+          max(constraints.maxWidth - (columns * cellSize), 0) / 2;
       final verticalPadding =
-          max(constraints.maxHeight - topBarHeight - (rows * cellSize), 0);
+          max(constraints.maxHeight - topBarHeight - (rows * cellSize), 0) / 2;
 
       return Padding(
           padding: EdgeInsets.symmetric(
-              horizontal: horizontalPadding / 2, vertical: verticalPadding / 2),
+              horizontal: horizontalPadding, vertical: verticalPadding),
           child: GridView.builder(
             gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
               maxCrossAxisExtent: cellSize,
@@ -49,11 +50,34 @@ class VisualizerGrid extends StatelessWidget {
                   builder: (context, nodeState, child) {
                     return GridCell(
                         nodeState: nodeState,
-                        onToggleWallNode: () => viewModel.onEvent(
-                            ToggleWallNode(row: gridRow, column: gridColumn)));
+                        onTab: () => viewModel.onEvent(
+                            ToggleWallNode(row: gridRow, column: gridColumn)),
+                        onPanStart: () => {
+                              if (nodeState == NodeState.target)
+                                {viewModel.onEvent(StartTargetNodeDrag())}
+                              else if (nodeState == NodeState.start)
+                                {viewModel.onEvent(StartStartNodeDrag())}
+                            },
+                        onPanEnd: () => viewModel.onEvent(StopNodeDrag()),
+                        onPanUpdate: (globalPosition) {
+                          var currentPosition = _convertToGridPosition(
+                              globalPosition,
+                              horizontalPadding,
+                              verticalPadding + topBarHeight);
+                          var columns = (currentPosition.dx / cellSize).floor();
+                          var rows = (currentPosition.dy / cellSize).floor();
+
+                          viewModel
+                              .onEvent(DragNode(row: rows, column: columns));
+                        });
                   });
             },
           ));
     });
+  }
+
+  Offset _convertToGridPosition(
+      Offset position, double leftPadding, double topPadding) {
+    return Offset(position.dx - leftPadding, position.dy - topPadding);
   }
 }

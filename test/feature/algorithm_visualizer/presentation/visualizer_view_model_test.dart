@@ -237,6 +237,50 @@ void main() {
           AlgorithmRunningStatus.stopped);
     });
   });
+
+  group("drag node", () {
+    late VisualizerViewModel viewModel;
+    late PathFindingExecutorService pathFindingExecutorService;
+
+    setUp(() {
+      pathFindingExecutorService = MockPathFindingExecutorService();
+      viewModel = VisualizerViewModel(pathFindingExecutorService);
+    });
+
+    test("drag target node", () {
+      var row = 0;
+      var col = 0;
+
+      viewModel.onEvent(StartTargetNodeDrag());
+      viewModel.onEvent(DragNode(row: row, column: col));
+      verify(pathFindingExecutorService.selectTargetNode(row, col)).called(1);
+    });
+
+    test("drag start node", () {
+      var row = 0;
+      var col = 0;
+
+      viewModel.onEvent(StartStartNodeDrag());
+      viewModel.onEvent(DragNode(row: row, column: col));
+      verify(pathFindingExecutorService.selectStartNode(row, col)).called(1);
+    });
+
+    test("drag node only allowed when stopped", () {
+      var row = 0;
+      var col = 0;
+
+      viewModel.onEvent(PlayPauseButtonClick()); // is running
+      viewModel.onEvent(StartStartNodeDrag());
+      viewModel.onEvent(DragNode(row: row, column: col));
+
+      viewModel.onEvent(PlayPauseButtonClick()); // is paused
+      viewModel.onEvent(StartStartNodeDrag());
+      viewModel.onEvent(DragNode(row: row, column: col));
+
+      verifyNever(pathFindingExecutorService.selectStartNode(row, col));
+      verifyNever(pathFindingExecutorService.selectTargetNode(row, col));
+    });
+  });
 }
 
 void _expectEveryNodeStateIsUnvisitedOrStartOrTarget(

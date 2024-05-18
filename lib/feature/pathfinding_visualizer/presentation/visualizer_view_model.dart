@@ -24,6 +24,9 @@ class VisualizerViewModel {
 
   late ValueNotifier<bool> _algorithmSelectionEnabled;
 
+  bool _targetNodeIsDragged = false;
+  bool _startNodeIsDragged = false;
+
   VisualizerViewModel(PathFindingExecutorService pathFindingExecutorService) {
     _pathFindingExecutorService = pathFindingExecutorService;
 
@@ -55,6 +58,14 @@ class VisualizerViewModel {
     switch (event) {
       case GridSizeChanged event:
         _onGridSizeChanged(event.newWidth, event.newHeight);
+      case DragNode event:
+        _onNodeDragged(event.row, event.column);
+      case StartTargetNodeDrag _:
+        _startTargetNodeDrag();
+      case StartStartNodeDrag _:
+        _startStartNodeDrag();
+      case StopNodeDrag _:
+        _endNodeDrag();
       case PlayPauseButtonClick _:
         _onPlayPauseButtonClick();
       case ClearResetButtonClick _:
@@ -175,6 +186,31 @@ class VisualizerViewModel {
     _grid = _pathFindingExecutorService.nodeStateGrid
         .map((row) => row.map((nodeState) => ValueNotifier(nodeState)).toList())
         .toList();
+  }
+
+  void _startTargetNodeDrag() {
+    if (_algorithmRunningStatus.value == AlgorithmRunningStatus.stopped) {
+      _targetNodeIsDragged = true;
+    }
+  }
+
+  void _startStartNodeDrag() {
+    if (_algorithmRunningStatus.value == AlgorithmRunningStatus.stopped) {
+      _startNodeIsDragged = true;
+    }
+  }
+
+  void _onNodeDragged(int row, int column) {
+    if (_targetNodeIsDragged) {
+      _pathFindingExecutorService.selectTargetNode(row, column);
+    } else if (_startNodeIsDragged) {
+      _pathFindingExecutorService.selectStartNode(row, column);
+    }
+  }
+
+  void _endNodeDrag() {
+    _targetNodeIsDragged = false;
+    _startNodeIsDragged = false;
   }
 
   int get rows => _grid.length;

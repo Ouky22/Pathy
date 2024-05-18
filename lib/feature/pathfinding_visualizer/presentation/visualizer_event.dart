@@ -31,3 +31,16 @@ class GridSizeChanged implements VisualizerEvent {
 
   GridSizeChanged({required this.newWidth, required this.newHeight});
 }
+
+class StartTargetNodeDrag implements VisualizerEvent {}
+
+class StartStartNodeDrag implements VisualizerEvent {}
+
+class StopNodeDrag implements VisualizerEvent {}
+
+class DragNode implements VisualizerEvent {
+  final int row;
+  final int column;
+
+  DragNode({required this.row, required this.column});
+}
