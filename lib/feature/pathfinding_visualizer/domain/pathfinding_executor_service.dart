@@ -146,7 +146,7 @@ class PathFindingExecutorService {
     }
 
     var node = _grid[row][column];
-    if (node.isWall || node == startNode) {
+    if (node.isWall || node == startNode || node == targetNode) {
       return;
     }
 
@@ -167,7 +167,7 @@ class PathFindingExecutorService {
     }
 
     var node = _grid[row][column];
-    if (node.isWall || node == targetNode) {
+    if (node.isWall || node == targetNode || node == startNode) {
       return;
     }
 
