@@ -1,7 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import '../../domain/model/node_state.dart';
+import 'package:pathy/feature/pathfinding_visualizer/presentation/widget/grid_cell.dart';
+import '../../../../constants.dart';
 import '../visualizer_event.dart';
 import '../visualizer_view_model.dart';
 
@@ -9,8 +10,6 @@ class VisualizerGrid extends StatelessWidget {
   final VisualizerViewModel viewModel;
 
   const VisualizerGrid({super.key, required this.viewModel});
-
-  static const double cellSize = VisualizerViewModel.cellSize;
 
   @override
   Widget build(BuildContext context) {
@@ -48,40 +47,13 @@ class VisualizerGrid extends StatelessWidget {
               return ValueListenableBuilder(
                   valueListenable: viewModel.grid[gridRow][gridColumn],
                   builder: (context, nodeState, child) {
-                    return GestureDetector(
-                      onTap: () {
-                        viewModel.onEvent(
-                            ToggleWallNode(row: gridRow, column: gridColumn));
-                      },
-                      child: Container(
-                        height: cellSize,
-                        width: cellSize,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.black, width: 0.3),
-                          color: _determineNodeColor(nodeState: nodeState),
-                        ),
-                      ),
-                    );
+                    return GridCell(
+                        nodeState: nodeState,
+                        onToggleWallNode: () => viewModel.onEvent(
+                            ToggleWallNode(row: gridRow, column: gridColumn)));
                   });
             },
           ));
     });
-  }
-
-  Color _determineNodeColor({required NodeState nodeState}) {
-    switch (nodeState) {
-      case NodeState.visited:
-        return Colors.teal;
-      case NodeState.unvisited:
-        return Colors.white70;
-      case NodeState.wall:
-        return Colors.black38;
-      case NodeState.path:
-        return Colors.orangeAccent;
-      case NodeState.start:
-        return Colors.green;
-      case NodeState.target:
-        return Colors.red;
-    }
   }
 }

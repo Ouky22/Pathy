@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:pathy/feature/pathfinding_visualizer/domain/pathfinding_executor_service.dart';
 import 'package:pathy/feature/pathfinding_visualizer/presentation/visualizer_event.dart';
+import '../../../constants.dart';
 import '../domain/model/algorithm_running_status.dart';
 import '../domain/model/algorithm_speed_level.dart';
 import '../domain/model/node_state.dart';
@@ -10,7 +11,6 @@ import '../domain/model/path_finding_algorithm_selection.dart';
 class VisualizerViewModel {
   static int minSpeedLevelIndex = 0;
   static int maxSpeedLevelIndex = AlgorithmSpeedLevel.values.length - 1;
-  static const double cellSize = 32.0;
 
   late final PathFindingExecutorService _pathFindingExecutorService;
 

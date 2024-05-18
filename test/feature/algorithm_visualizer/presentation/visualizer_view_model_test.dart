@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:pathy/constants.dart';
 import 'package:pathy/feature/pathfinding_visualizer/domain/model/algorithm_running_status.dart';
 import 'package:pathy/feature/pathfinding_visualizer/domain/model/algorithm_speed_level.dart';
 import 'package:pathy/feature/pathfinding_visualizer/domain/model/node_state.dart';
@@ -200,8 +201,8 @@ void main() {
       when(pathFindingExecutorService.rows).thenReturn(rows);
       when(pathFindingExecutorService.columns).thenReturn(columns);
 
-      var oldHeight = rows * VisualizerViewModel.cellSize;
-      var oldWidth = columns * VisualizerViewModel.cellSize;
+      var oldHeight = rows * cellSize;
+      var oldWidth = columns * cellSize;
       viewModel
           .onEvent(GridSizeChanged(newWidth: oldWidth, newHeight: oldHeight));
 
@@ -214,8 +215,8 @@ void main() {
       when(pathFindingExecutorService.rows).thenReturn(rows);
       when(pathFindingExecutorService.columns).thenReturn(columns);
 
-      var newHeight = VisualizerViewModel.cellSize * 2;
-      var newWidth = VisualizerViewModel.cellSize * 2;
+      var newHeight = cellSize * 2;
+      var newWidth = cellSize * 2;
       viewModel
           .onEvent(GridSizeChanged(newWidth: newWidth, newHeight: newHeight));
 
@@ -242,15 +243,17 @@ void _expectEveryNodeStateIsUnvisitedOrStartOrTarget(
     List<List<ValueListenable<NodeState>>> grid) {
   for (var row = 0; row < grid.length; row++) {
     for (var col = 0; col < grid.length; col++) {
-      var isUnvisitedOrStartOrTarget = grid[row][col].value == NodeState.unvisited ||
-          grid[row][col].value == NodeState.target ||
-          grid[row][col].value == NodeState.start;
+      var isUnvisitedOrStartOrTarget =
+          grid[row][col].value == NodeState.unvisited ||
+              grid[row][col].value == NodeState.target ||
+              grid[row][col].value == NodeState.start;
       expect(isUnvisitedOrStartOrTarget, true);
     }
   }
 }
 
-void _expectEveryNodeStateIsNotVisitedAndNotPath(List<List<ValueListenable<NodeState>>> grid) {
+void _expectEveryNodeStateIsNotVisitedAndNotPath(
+    List<List<ValueListenable<NodeState>>> grid) {
   for (var row = 0; row < grid.length; row++) {
     for (var col = 0; col < grid.length; col++) {
       expect(grid[row][col].value, isNot(NodeState.visited));
