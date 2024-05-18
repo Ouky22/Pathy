@@ -11,6 +11,7 @@ A visualizer for pathfinding algorithms
 - Pause and resume the visualization
 - Set walls
 - The grid is responsive to the window size
+- Move start and end node via drag and drop
 
 # Supported platforms
 
