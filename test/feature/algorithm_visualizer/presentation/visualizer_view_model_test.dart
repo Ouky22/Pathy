@@ -238,7 +238,7 @@ void main() {
     });
   });
 
-  group("drag node", () {
+  group("pan node", () {
     late VisualizerViewModel viewModel;
     late PathFindingExecutorService pathFindingExecutorService;
 
@@ -252,7 +252,7 @@ void main() {
       var col = 0;
 
       viewModel.onEvent(StartTargetNodeDrag());
-      viewModel.onEvent(DragNode(row: row, column: col));
+      viewModel.onEvent(PanNode(row: row, column: col));
       verify(pathFindingExecutorService.selectTargetNode(row, col)).called(1);
     });
 
@@ -261,7 +261,7 @@ void main() {
       var col = 0;
 
       viewModel.onEvent(StartStartNodeDrag());
-      viewModel.onEvent(DragNode(row: row, column: col));
+      viewModel.onEvent(PanNode(row: row, column: col));
       verify(pathFindingExecutorService.selectStartNode(row, col)).called(1);
     });
 
@@ -271,14 +271,45 @@ void main() {
 
       viewModel.onEvent(PlayPauseButtonClick()); // is running
       viewModel.onEvent(StartStartNodeDrag());
-      viewModel.onEvent(DragNode(row: row, column: col));
+      viewModel.onEvent(PanNode(row: row, column: col));
 
       viewModel.onEvent(PlayPauseButtonClick()); // is paused
       viewModel.onEvent(StartStartNodeDrag());
-      viewModel.onEvent(DragNode(row: row, column: col));
+      viewModel.onEvent(PanNode(row: row, column: col));
 
       verifyNever(pathFindingExecutorService.selectStartNode(row, col));
       verifyNever(pathFindingExecutorService.selectTargetNode(row, col));
+    });
+
+    test("multiselect wall node", () {
+      var row1 = 0;
+      var col1 = 0;
+      var row2 = 1; // move to row 1
+      var col2 = 0;
+      var row3 = 1; // position not changed
+      var col3 = 0;
+
+      viewModel.onEvent(StartWallNodeMultiSelection());
+      viewModel.onEvent(PanNode(row: row1, column: col1));
+      viewModel.onEvent(PanNode(row: row2, column: col2));
+      viewModel.onEvent(PanNode(row: row3, column: col3));
+      verify(pathFindingExecutorService.toggleWall(row1, col1)).called(1);
+      verify(pathFindingExecutorService.toggleWall(row2, col2)).called(1);
+    });
+
+    test("multiselect wall node only allowed when stopped", () {
+      var row = 0;
+      var col = 0;
+
+      viewModel.onEvent(PlayPauseButtonClick()); // is running
+      viewModel.onEvent(StartWallNodeMultiSelection());
+      viewModel.onEvent(PanNode(row: row, column: col));
+
+      viewModel.onEvent(PlayPauseButtonClick()); // is paused
+      viewModel.onEvent(StartWallNodeMultiSelection());
+      viewModel.onEvent(PanNode(row: row, column: col));
+
+      verifyNever(pathFindingExecutorService.toggleWall(row, col));
     });
   });
 }

@@ -57,6 +57,11 @@ class VisualizerGrid extends StatelessWidget {
                                 {viewModel.onEvent(StartTargetNodeDrag())}
                               else if (nodeState == NodeState.start)
                                 {viewModel.onEvent(StartStartNodeDrag())}
+                              else
+                                {
+                                  viewModel
+                                      .onEvent(StartWallNodeMultiSelection())
+                                }
                             },
                         onPanEnd: () => viewModel.onEvent(StopNodeDrag()),
                         onPanUpdate: (globalPosition) {
@@ -68,7 +73,7 @@ class VisualizerGrid extends StatelessWidget {
                           var rows = (currentPosition.dy / cellSize).floor();
 
                           viewModel
-                              .onEvent(DragNode(row: rows, column: columns));
+                              .onEvent(PanNode(row: rows, column: columns));
                         });
                   });
             },

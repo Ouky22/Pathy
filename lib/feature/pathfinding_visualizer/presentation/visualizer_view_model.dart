@@ -26,6 +26,10 @@ class VisualizerViewModel {
 
   bool _targetNodeIsDragged = false;
   bool _startNodeIsDragged = false;
+  bool _wallNodeMultiSelectionActive = false;
+
+  int lastNodePanedRow = -1;
+  int lastNodePanedColumn = -1;
 
   VisualizerViewModel(PathFindingExecutorService pathFindingExecutorService) {
     _pathFindingExecutorService = pathFindingExecutorService;
@@ -58,12 +62,14 @@ class VisualizerViewModel {
     switch (event) {
       case GridSizeChanged event:
         _onGridSizeChanged(event.newWidth, event.newHeight);
-      case DragNode event:
-        _onNodeDragged(event.row, event.column);
+      case PanNode event:
+        _onNodePan(event.row, event.column);
       case StartTargetNodeDrag _:
         _startTargetNodeDrag();
       case StartStartNodeDrag _:
         _startStartNodeDrag();
+      case StartWallNodeMultiSelection _:
+        _startWallNodeMultiSelection();
       case StopNodeDrag _:
         _endNodeDrag();
       case PlayPauseButtonClick _:
@@ -200,17 +206,32 @@ class VisualizerViewModel {
     }
   }
 
-  void _onNodeDragged(int row, int column) {
+  void _startWallNodeMultiSelection() {
+    if (_algorithmRunningStatus.value == AlgorithmRunningStatus.stopped) {
+      _wallNodeMultiSelectionActive = true;
+    }
+  }
+
+  void _onNodePan(int row, int column) {
     if (_targetNodeIsDragged) {
       _pathFindingExecutorService.selectTargetNode(row, column);
     } else if (_startNodeIsDragged) {
       _pathFindingExecutorService.selectStartNode(row, column);
+    } else if (_wallNodeMultiSelectionActive) {
+      if (lastNodePanedRow != row || lastNodePanedColumn != column) {
+        _pathFindingExecutorService.toggleWall(row, column);
+        lastNodePanedRow = row;
+        lastNodePanedColumn = column;
+      }
     }
   }
 
   void _endNodeDrag() {
     _targetNodeIsDragged = false;
     _startNodeIsDragged = false;
+    _wallNodeMultiSelectionActive = false;
+    lastNodePanedRow = -1;
+    lastNodePanedColumn = -1;
   }
 
   int get rows => _grid.length;

@@ -36,11 +36,13 @@ class StartTargetNodeDrag implements VisualizerEvent {}
 
 class StartStartNodeDrag implements VisualizerEvent {}
 
+class StartWallNodeMultiSelection implements VisualizerEvent {}
+
 class StopNodeDrag implements VisualizerEvent {}
 
-class DragNode implements VisualizerEvent {
+class PanNode implements VisualizerEvent {
   final int row;
   final int column;
 
-  DragNode({required this.row, required this.column});
+  PanNode({required this.row, required this.column});
 }
