@@ -124,7 +124,9 @@ class PathFindingExecutorService {
   }
 
   void toggleWall(int row, int column) {
-    if (_pathFindingAlgorithmIsActive) {
+    if (_pathFindingAlgorithmIsActive ||
+        _rowIsOutOfBounds(row) ||
+        _columnIsOutOfBounds(column)) {
       return;
     }
 
