@@ -1,44 +1,74 @@
 import 'package:flutter/material.dart';
 import 'package:pathy/feature/pathfinding_visualizer/presentation/visualizer_view_model.dart';
-import 'package:provider/provider.dart';
 
+import '../../domain/model/algorithm_running_status.dart';
+import '../../domain/model/path_finding_algorithm_selection.dart';
 import '../visualizer_event.dart';
-import '../visualizer_state.dart';
 import 'algorithm_dropdown_menu.dart';
 
 class VisualizerControlSection extends StatelessWidget {
-  const VisualizerControlSection({super.key});
+  final VisualizerViewModel viewModel;
+
+  const VisualizerControlSection({super.key, required this.viewModel});
 
   @override
   Widget build(BuildContext context) {
-    var model = Provider.of<VisualizerViewModel>(context);
-
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        ElevatedButton(
-            onPressed: () {
-              model.onEvent(ClearResetButtonClick());
-            },
-            child: Text(
-                _clearResetButtonText(model.state.algorithmRunningStatus))),
-        ElevatedButton(
-          onPressed: () {
-            model.onEvent(PlayPauseButtonClick());
-          },
-          child: Text(_playPauseButtonText(model.state.algorithmRunningStatus)),
-        ),
-        Slider(
-            value: model.state.speedLevelIndex.toDouble(),
-            min: VisualizerViewModel.minSpeedLevelIndex.toDouble(),
-            max: VisualizerViewModel.maxSpeedLevelIndex.toDouble(),
-            divisions: VisualizerViewModel.maxSpeedLevelIndex -
-                VisualizerViewModel.minSpeedLevelIndex,
-            onChanged: (double value) {
-              model.onEvent(
-                  ChangeAnimationSpeed(newSpeedLevelIndex: value.toInt()));
+        ValueListenableBuilder(
+            valueListenable: viewModel.algorithmRunningStatus,
+            builder: (context, algorithmRunningStatus, child) {
+              return ElevatedButton(
+                  onPressed: () {
+                    viewModel.onEvent(ClearResetButtonClick());
+                  },
+                  child: Text(_clearResetButtonText(algorithmRunningStatus)));
             }),
-        const AlgorithmDropdownMenu(),
+        ValueListenableBuilder(
+          valueListenable: viewModel.algorithmRunningStatus,
+          builder: (context, algorithmRunningStatus, child) {
+            return ElevatedButton(
+              onPressed: () {
+                viewModel.onEvent(PlayPauseButtonClick());
+              },
+              child: Text(_playPauseButtonText(algorithmRunningStatus)),
+            );
+          },
+        ),
+        ValueListenableBuilder(
+          valueListenable: viewModel.speedLevelIndex,
+          builder: (context, speedLevelIndex, child) {
+            return Slider(
+              value: speedLevelIndex.toDouble(),
+              min: VisualizerViewModel.minSpeedLevelIndex.toDouble(),
+              max: VisualizerViewModel.maxSpeedLevelIndex.toDouble(),
+              divisions: VisualizerViewModel.maxSpeedLevelIndex -
+                  VisualizerViewModel.minSpeedLevelIndex,
+              onChanged: (double value) {
+                viewModel.onEvent(
+                    ChangeAnimationSpeed(newSpeedLevelIndex: value.toInt()));
+              },
+            );
+          },
+        ),
+        ValueListenableBuilder(
+          valueListenable: viewModel.algorithmSelectionEnabled,
+          builder: (context, algorithmSelectionEnabled, child) {
+            return ValueListenableBuilder<PathFindingAlgorithmSelection>(
+              valueListenable: viewModel.selectedAlgorithm,
+              builder: (context, selectedAlgorithm, child) {
+                return AlgorithmDropdownMenu(
+                  algorithmSelectionEnabled: algorithmSelectionEnabled,
+                  selectedAlgorithm: selectedAlgorithm,
+                  onSelected: (PathFindingAlgorithmSelection algorithm) {
+                    viewModel.onEvent(SelectAlgorithm(algorithm: algorithm));
+                  },
+                );
+              },
+            );
+          },
+        )
       ],
     );
   }

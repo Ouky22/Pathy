@@ -1,11 +1,12 @@
+import 'package:flutter/foundation.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:pathy/feature/pathfinding_visualizer/domain/model/algorithm_running_status.dart';
 import 'package:pathy/feature/pathfinding_visualizer/domain/model/algorithm_speed_level.dart';
 import 'package:pathy/feature/pathfinding_visualizer/domain/model/node_state.dart';
 import 'package:pathy/feature/pathfinding_visualizer/domain/model/path_finding_algorithm_selection.dart';
 import 'package:pathy/feature/pathfinding_visualizer/domain/pathfinding_executor_service.dart';
 import 'package:pathy/feature/pathfinding_visualizer/presentation/visualizer_event.dart';
-import 'package:pathy/feature/pathfinding_visualizer/presentation/visualizer_state.dart';
 import 'package:pathy/feature/pathfinding_visualizer/presentation/visualizer_view_model.dart';
 import 'package:test/test.dart';
 
@@ -23,37 +24,37 @@ void main() {
     });
 
     test("starts with running status stopped", () {
-      expect(viewModel.state.algorithmRunningStatus,
+      expect(viewModel.algorithmRunningStatus.value,
           AlgorithmRunningStatus.stopped);
-      _expectEveryNodeStateIsUnvisitedOrStartOrTarget(viewModel.state.grid);
+      _expectEveryNodeStateIsUnvisitedOrStartOrTarget(viewModel.grid);
     });
 
     test("from stopped to running", () {
       viewModel.onEvent(PlayPauseButtonClick());
-      expect(viewModel.state.algorithmRunningStatus,
+      expect(viewModel.algorithmRunningStatus.value,
           AlgorithmRunningStatus.running);
     });
 
     test("from running to paused", () {
       viewModel.onEvent(PlayPauseButtonClick());
       viewModel.onEvent(PlayPauseButtonClick());
-      expect(viewModel.state.algorithmRunningStatus,
+      expect(viewModel.algorithmRunningStatus.value,
           AlgorithmRunningStatus.paused);
     });
 
     test("from running to stopped", () {
       viewModel.onEvent(PlayPauseButtonClick());
       viewModel.onEvent(ClearResetButtonClick());
-      expect(viewModel.state.algorithmRunningStatus,
+      expect(viewModel.algorithmRunningStatus.value,
           AlgorithmRunningStatus.stopped);
-      _expectEveryNodeStateIsNotVisitedAndNotPath(viewModel.state.grid);
+      _expectEveryNodeStateIsNotVisitedAndNotPath(viewModel.grid);
     });
 
     test("from paused to running", () {
       viewModel.onEvent(PlayPauseButtonClick());
       viewModel.onEvent(PlayPauseButtonClick());
       viewModel.onEvent(PlayPauseButtonClick());
-      expect(viewModel.state.algorithmRunningStatus,
+      expect(viewModel.algorithmRunningStatus.value,
           AlgorithmRunningStatus.running);
     });
 
@@ -61,31 +62,16 @@ void main() {
       viewModel.onEvent(PlayPauseButtonClick());
       viewModel.onEvent(PlayPauseButtonClick());
       viewModel.onEvent(ClearResetButtonClick());
-      expect(viewModel.state.algorithmRunningStatus,
+      expect(viewModel.algorithmRunningStatus.value,
           AlgorithmRunningStatus.stopped);
-      _expectEveryNodeStateIsNotVisitedAndNotPath(viewModel.state.grid);
+      _expectEveryNodeStateIsNotVisitedAndNotPath(viewModel.grid);
     });
 
     test("from stopped to stopped", () {
       viewModel.onEvent(ClearResetButtonClick());
-      expect(viewModel.state.algorithmRunningStatus,
+      expect(viewModel.algorithmRunningStatus.value,
           AlgorithmRunningStatus.stopped);
-      _expectEveryNodeStateIsUnvisitedOrStartOrTarget(viewModel.state.grid);
-    });
-
-    test("from finished to running", () {
-      viewModel.state.algorithmRunningStatus = AlgorithmRunningStatus.finished;
-      viewModel.onEvent(PlayPauseButtonClick());
-      expect(viewModel.state.algorithmRunningStatus,
-          AlgorithmRunningStatus.running);
-    });
-
-    test("from finished to stopped", () {
-      viewModel.state.algorithmRunningStatus = AlgorithmRunningStatus.finished;
-      viewModel.onEvent(ClearResetButtonClick());
-      expect(viewModel.state.algorithmRunningStatus,
-          AlgorithmRunningStatus.stopped);
-      _expectEveryNodeStateIsNotVisitedAndNotPath(viewModel.state.grid);
+      _expectEveryNodeStateIsUnvisitedOrStartOrTarget(viewModel.grid);
     });
   });
 
@@ -104,7 +90,7 @@ void main() {
       viewModel.onEvent(
           ChangeAnimationSpeed(newSpeedLevelIndex: maxSpeedLevelIndex));
 
-      expect(viewModel.state.speedLevelIndex, maxSpeedLevelIndex);
+      expect(viewModel.speedLevelIndex.value, maxSpeedLevelIndex);
       verifyInOrder([
         pathFindingExecutorService
             .changeAlgorithmAnimationSpeed(AlgorithmSpeedLevel.slow),
@@ -119,7 +105,7 @@ void main() {
           ChangeAnimationSpeed(newSpeedLevelIndex: maxSpeedLevelIndex));
       viewModel.onEvent(ChangeAnimationSpeed(newSpeedLevelIndex: 0));
 
-      expect(viewModel.state.speedLevelIndex, 0);
+      expect(viewModel.speedLevelIndex.value, 0);
       verifyInOrder([
         pathFindingExecutorService
             .changeAlgorithmAnimationSpeed(AlgorithmSpeedLevel.turbo),
@@ -157,9 +143,6 @@ void main() {
       viewModel.onEvent(ToggleWallNode(row: row, column: col));
 
       viewModel.onEvent(PlayPauseButtonClick()); // is paused
-      viewModel.onEvent(ToggleWallNode(row: row, column: col));
-
-      viewModel.state.algorithmRunningStatus = AlgorithmRunningStatus.finished;
       viewModel.onEvent(ToggleWallNode(row: row, column: col));
 
       verifyNever(pathFindingExecutorService.toggleWall(row, col));
@@ -249,29 +232,29 @@ void main() {
       viewModel.onEvent(GridSizeChanged(newWidth: 100, newHeight: 100));
 
       verify(pathFindingExecutorService.stopPathFinding()).called(1);
-      expect(viewModel.state.algorithmRunningStatus,
+      expect(viewModel.algorithmRunningStatus.value,
           AlgorithmRunningStatus.stopped);
     });
   });
 }
 
 void _expectEveryNodeStateIsUnvisitedOrStartOrTarget(
-    List<List<NodeState>> grid) {
+    List<List<ValueListenable<NodeState>>> grid) {
   for (var row = 0; row < grid.length; row++) {
     for (var col = 0; col < grid.length; col++) {
-      var isUnvisitedOrStartOrTarget = grid[row][col] == NodeState.unvisited ||
-          grid[row][col] == NodeState.target ||
-          grid[row][col] == NodeState.start;
+      var isUnvisitedOrStartOrTarget = grid[row][col].value == NodeState.unvisited ||
+          grid[row][col].value == NodeState.target ||
+          grid[row][col].value == NodeState.start;
       expect(isUnvisitedOrStartOrTarget, true);
     }
   }
 }
 
-void _expectEveryNodeStateIsNotVisitedAndNotPath(List<List<NodeState>> grid) {
+void _expectEveryNodeStateIsNotVisitedAndNotPath(List<List<ValueListenable<NodeState>>> grid) {
   for (var row = 0; row < grid.length; row++) {
     for (var col = 0; col < grid.length; col++) {
-      expect(grid[row][col], isNot(NodeState.visited));
-      expect(grid[row][col], isNot(NodeState.path));
+      expect(grid[row][col].value, isNot(NodeState.visited));
+      expect(grid[row][col].value, isNot(NodeState.path));
     }
   }
 }

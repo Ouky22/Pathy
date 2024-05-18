@@ -7,11 +7,11 @@ import 'dart:async' as _i4;
 
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:pathy/feature/pathfinding_visualizer/domain/model/algorithm_speed_level.dart'
-    as _i8;
+    as _i7;
 import 'package:pathy/feature/pathfinding_visualizer/domain/model/node.dart'
     as _i2;
 import 'package:pathy/feature/pathfinding_visualizer/domain/model/node_state.dart'
-    as _i7;
+    as _i8;
 import 'package:pathy/feature/pathfinding_visualizer/domain/model/node_state_change.dart'
     as _i5;
 import 'package:pathy/feature/pathfinding_visualizer/domain/model/path_finding_algorithm_selection.dart'
@@ -144,11 +144,18 @@ class MockPathFindingExecutorService extends _i1.Mock
       ) as int);
 
   @override
-  List<List<_i7.NodeState>> get nodeStateGrid => (super.noSuchMethod(
+  _i7.AlgorithmSpeedLevel get algorithmAnimationSpeed => (super.noSuchMethod(
+        Invocation.getter(#algorithmAnimationSpeed),
+        returnValue: _i7.AlgorithmSpeedLevel.turbo,
+        returnValueForMissingStub: _i7.AlgorithmSpeedLevel.turbo,
+      ) as _i7.AlgorithmSpeedLevel);
+
+  @override
+  List<List<_i8.NodeState>> get nodeStateGrid => (super.noSuchMethod(
         Invocation.getter(#nodeStateGrid),
-        returnValue: <List<_i7.NodeState>>[],
-        returnValueForMissingStub: <List<_i7.NodeState>>[],
-      ) as List<List<_i7.NodeState>>);
+        returnValue: <List<_i8.NodeState>>[],
+        returnValueForMissingStub: <List<_i8.NodeState>>[],
+      ) as List<List<_i8.NodeState>>);
 
   @override
   void startNewPathFinding() => super.noSuchMethod(
@@ -187,7 +194,7 @@ class MockPathFindingExecutorService extends _i1.Mock
       );
 
   @override
-  void changeAlgorithmAnimationSpeed(_i8.AlgorithmSpeedLevel? speedLevel) =>
+  void changeAlgorithmAnimationSpeed(_i7.AlgorithmSpeedLevel? speedLevel) =>
       super.noSuchMethod(
         Invocation.method(
           #changeAlgorithmAnimationSpeed,

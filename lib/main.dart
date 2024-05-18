@@ -1,12 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:pathy/feature/pathfinding_visualizer/presentation/widget/pathfinding_visualizer_page.dart';
 
+import 'feature/pathfinding_visualizer/domain/pathfinding_executor_service.dart';
+import 'feature/pathfinding_visualizer/presentation/visualizer_view_model.dart';
+
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  late final PathFindingExecutorService pathFindingExecutorService;
+  late final VisualizerViewModel visualizerViewModel;
+
+  MyApp({super.key}) {
+    pathFindingExecutorService = PathFindingExecutorService();
+    visualizerViewModel = VisualizerViewModel(pathFindingExecutorService);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,8 +25,8 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const Scaffold(
-        body: PathfindingVisualizerPage(),
+      home: Scaffold(
+        body: PathfindingVisualizerPage(viewModel: visualizerViewModel),
       ),
     );
   }

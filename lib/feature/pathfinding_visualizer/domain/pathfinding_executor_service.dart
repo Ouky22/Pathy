@@ -58,6 +58,8 @@ class PathFindingExecutorService {
 
   int get columns => _grid[0].length;
 
+  AlgorithmSpeedLevel get algorithmAnimationSpeed => _algorithmAnimationSpeed;
+
   List<List<NodeState>> get nodeStateGrid => _grid
       .map((row) => row.map((node) {
             if (node == startNode) {

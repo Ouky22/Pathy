@@ -1,27 +1,45 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:pathy/feature/pathfinding_visualizer/domain/pathfinding_executor_service.dart';
 import 'package:pathy/feature/pathfinding_visualizer/presentation/visualizer_event.dart';
+import '../domain/model/algorithm_running_status.dart';
 import '../domain/model/algorithm_speed_level.dart';
+import '../domain/model/node_state.dart';
 import '../domain/model/node_state_change.dart';
 import '../domain/model/path_finding_algorithm_selection.dart';
-import 'visualizer_state.dart';
 
-class VisualizerViewModel extends ChangeNotifier {
+class VisualizerViewModel {
   static int minSpeedLevelIndex = 0;
   static int maxSpeedLevelIndex = AlgorithmSpeedLevel.values.length - 1;
   static const double cellSize = 32.0;
 
   late final PathFindingExecutorService _pathFindingExecutorService;
 
-  late final VisualizerState state;
+  late List<List<ValueNotifier<NodeState>>> _grid;
+
+  late ValueNotifier<AlgorithmRunningStatus> _algorithmRunningStatus;
+
+  late ValueNotifier<int> _speedLevelIndex;
+
+  late ValueNotifier<PathFindingAlgorithmSelection> _selectedAlgorithm;
+
+  late ValueNotifier<bool> _algorithmSelectionEnabled;
 
   VisualizerViewModel(PathFindingExecutorService pathFindingExecutorService) {
     _pathFindingExecutorService = pathFindingExecutorService;
-    var defaultSpeedLevel = AlgorithmSpeedLevel.medium;
 
-    state = VisualizerState(
-        grid: _pathFindingExecutorService.nodeStateGrid,
-        speedLevelIndex: defaultSpeedLevel.index);
+    _grid = _pathFindingExecutorService.nodeStateGrid
+        .map((row) => row.map((nodeState) => ValueNotifier(nodeState)).toList())
+        .toList();
+
+    _algorithmRunningStatus = ValueNotifier(AlgorithmRunningStatus.stopped);
+
+    _speedLevelIndex = ValueNotifier(
+        _pathFindingExecutorService.algorithmAnimationSpeed.index);
+
+    _selectedAlgorithm =
+        ValueNotifier(_pathFindingExecutorService.selectedAlgorithm);
+
+    _algorithmSelectionEnabled = ValueNotifier(true);
 
     _pathFindingExecutorService.nodeStateChangeStream
         .listen((nodeStateChanges) {
@@ -29,8 +47,7 @@ class VisualizerViewModel extends ChangeNotifier {
     });
 
     _pathFindingExecutorService.pathFindingFinishedEventStream.listen((_) {
-      state.algorithmRunningStatus = AlgorithmRunningStatus.finished;
-      notifyListeners();
+      _algorithmRunningStatus.value = AlgorithmRunningStatus.finished;
     });
   }
 
@@ -52,7 +69,7 @@ class VisualizerViewModel extends ChangeNotifier {
   }
 
   void _onPlayPauseButtonClick() {
-    if (state.algorithmRunningStatus == AlgorithmRunningStatus.running) {
+    if (_algorithmRunningStatus.value == AlgorithmRunningStatus.running) {
       _pauseAlgorithm();
     } else {
       _playAlgorithm();
@@ -60,7 +77,7 @@ class VisualizerViewModel extends ChangeNotifier {
   }
 
   void _onClearResetButtonClick() {
-    switch (state.algorithmRunningStatus) {
+    switch (_algorithmRunningStatus.value) {
       case AlgorithmRunningStatus.paused:
       case AlgorithmRunningStatus.running:
       case AlgorithmRunningStatus.finished:
@@ -71,7 +88,7 @@ class VisualizerViewModel extends ChangeNotifier {
   }
 
   void _playAlgorithm() {
-    switch (state.algorithmRunningStatus) {
+    switch (_algorithmRunningStatus.value) {
       case AlgorithmRunningStatus.paused:
         _resumeAlgorithm();
       case AlgorithmRunningStatus.stopped:
@@ -84,42 +101,39 @@ class VisualizerViewModel extends ChangeNotifier {
 
   void _pauseAlgorithm() {
     _pathFindingExecutorService.pausePathFinding();
-    state.algorithmRunningStatus = AlgorithmRunningStatus.paused;
-    notifyListeners();
+    _algorithmRunningStatus.value = AlgorithmRunningStatus.paused;
   }
 
   void _resumeAlgorithm() {
     _pathFindingExecutorService.resumePathFinding();
-    state.algorithmRunningStatus = AlgorithmRunningStatus.running;
-    notifyListeners();
+    _algorithmRunningStatus.value = AlgorithmRunningStatus.running;
   }
 
   void _stopAlgorithm() {
-    if (state.algorithmRunningStatus == AlgorithmRunningStatus.finished) {
+    if (_algorithmRunningStatus.value == AlgorithmRunningStatus.finished) {
       _pathFindingExecutorService.clearVisitedAndPathNodes();
     } else {
       _pathFindingExecutorService.stopPathFinding();
     }
 
-    state.algorithmRunningStatus = AlgorithmRunningStatus.stopped;
-    notifyListeners();
+    _algorithmRunningStatus.value = AlgorithmRunningStatus.stopped;
+    _algorithmSelectionEnabled.value = true;
   }
 
   void _startNewAlgorithm() {
     _pathFindingExecutorService.startNewPathFinding();
-    state.algorithmRunningStatus = AlgorithmRunningStatus.running;
-    notifyListeners();
+    _algorithmRunningStatus.value = AlgorithmRunningStatus.running;
+    _algorithmSelectionEnabled.value = false;
   }
 
   void _onChangeAlgorithmAnimationSpeed(int newSpeedLevelIndex) {
-    state.speedLevelIndex = newSpeedLevelIndex;
     _pathFindingExecutorService.changeAlgorithmAnimationSpeed(
         AlgorithmSpeedLevel.values[maxSpeedLevelIndex - newSpeedLevelIndex]);
-    notifyListeners();
+    _speedLevelIndex.value = newSpeedLevelIndex;
   }
 
   void _toggleWall(int row, int column) {
-    if (state.algorithmRunningStatus != AlgorithmRunningStatus.stopped) {
+    if (_algorithmRunningStatus.value != AlgorithmRunningStatus.stopped) {
       return;
     }
 
@@ -130,19 +144,17 @@ class VisualizerViewModel extends ChangeNotifier {
     for (var nodeStateChange in nodeStateChanges) {
       var row = nodeStateChange.row;
       var column = nodeStateChange.column;
-      state.grid[row][column] = nodeStateChange.newState;
+      _grid[row][column].value = nodeStateChange.newState;
     }
-    notifyListeners();
   }
 
   void _onSelectAlgorithm(PathFindingAlgorithmSelection algorithm) {
-    if (state.algorithmRunningStatus != AlgorithmRunningStatus.stopped) {
+    if (_algorithmRunningStatus.value != AlgorithmRunningStatus.stopped) {
       return;
     }
 
     _pathFindingExecutorService.selectAlgorithm(algorithm);
-    state.selectedAlgorithm = _pathFindingExecutorService.selectedAlgorithm;
-    notifyListeners();
+    _selectedAlgorithm.value = _pathFindingExecutorService.selectedAlgorithm;
   }
 
   void _onGridSizeChanged(double newWidth, double newHeight) {
@@ -154,11 +166,31 @@ class VisualizerViewModel extends ChangeNotifier {
       return;
     }
 
-    if (state.algorithmRunningStatus == AlgorithmRunningStatus.running) {
+    if (_algorithmRunningStatus.value == AlgorithmRunningStatus.running) {
       _pathFindingExecutorService.stopPathFinding();
-      state.algorithmRunningStatus = AlgorithmRunningStatus.stopped;
+      _algorithmRunningStatus.value = AlgorithmRunningStatus.stopped;
+      _algorithmSelectionEnabled.value = true;
     }
     _pathFindingExecutorService.resizeGrid(newRows, newColumns);
-    state.grid = _pathFindingExecutorService.nodeStateGrid;
+    _grid = _pathFindingExecutorService.nodeStateGrid
+        .map((row) => row.map((nodeState) => ValueNotifier(nodeState)).toList())
+        .toList();
   }
+
+  int get rows => _grid.length;
+
+  int get columns => _grid[0].length;
+
+  List<List<ValueListenable<NodeState>>> get grid => _grid;
+
+  ValueListenable<AlgorithmRunningStatus> get algorithmRunningStatus =>
+      _algorithmRunningStatus;
+
+  ValueListenable<int> get speedLevelIndex => _speedLevelIndex;
+
+  ValueListenable<PathFindingAlgorithmSelection> get selectedAlgorithm =>
+      _selectedAlgorithm;
+
+  ValueListenable<bool> get algorithmSelectionEnabled =>
+      _algorithmSelectionEnabled;
 }
