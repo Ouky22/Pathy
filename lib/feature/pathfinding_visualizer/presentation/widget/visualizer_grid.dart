@@ -45,36 +45,28 @@ class VisualizerGrid extends StatelessWidget {
               int gridRow = index ~/ viewModel.grid[0].length;
               int gridColumn = index % viewModel.grid[0].length;
 
-              return ValueListenableBuilder(
-                  valueListenable: viewModel.grid[gridRow][gridColumn],
-                  builder: (context, nodeState, child) {
-                    return GridCell(
-                        nodeState: nodeState,
-                        onTab: () => viewModel.onEvent(
-                            ToggleWallNode(row: gridRow, column: gridColumn)),
-                        onPanStart: () => {
-                              if (nodeState == NodeState.target)
-                                {viewModel.onEvent(StartTargetNodeDrag())}
-                              else if (nodeState == NodeState.start)
-                                {viewModel.onEvent(StartStartNodeDrag())}
-                              else
-                                {
-                                  viewModel
-                                      .onEvent(StartWallNodeMultiSelection())
-                                }
-                            },
-                        onPanEnd: () => viewModel.onEvent(StopNodeDrag()),
-                        onPanUpdate: (globalPosition) {
-                          var currentPosition = _convertToGridPosition(
-                              globalPosition,
-                              horizontalPadding,
-                              verticalPadding + topBarHeight);
-                          var columns = (currentPosition.dx / cellSize).floor();
-                          var rows = (currentPosition.dy / cellSize).floor();
+              return GridCell(
+                  nodeStateListenable: viewModel.grid[gridRow][gridColumn],
+                  onTab: () => viewModel.onEvent(
+                      ToggleWallNode(row: gridRow, column: gridColumn)),
+                  onPanStart: () => {
+                        if (viewModel.grid[gridRow][gridColumn].value ==
+                            NodeState.target)
+                          {viewModel.onEvent(StartTargetNodeDrag())}
+                        else if (viewModel.grid[gridRow][gridColumn].value ==
+                            NodeState.start)
+                          {viewModel.onEvent(StartStartNodeDrag())}
+                        else
+                          {viewModel.onEvent(StartWallNodeMultiSelection())}
+                      },
+                  onPanEnd: () => viewModel.onEvent(StopNodeDrag()),
+                  onPanUpdate: (globalPosition) {
+                    var currentPosition = _convertToGridPosition(globalPosition,
+                        horizontalPadding, verticalPadding + topBarHeight);
+                    var columns = (currentPosition.dx / cellSize).floor();
+                    var rows = (currentPosition.dy / cellSize).floor();
 
-                          viewModel
-                              .onEvent(PanNode(row: rows, column: columns));
-                        });
+                    viewModel.onEvent(PanNode(row: rows, column: columns));
                   });
             },
           ));
