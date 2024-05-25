@@ -28,9 +28,6 @@ class PathFindingExecutorService {
 
   PathFindingAlgorithm? _algorithm;
 
-  PathFindingAlgorithmSelection _selectedAlgorithm =
-      PathFindingAlgorithmSelection.dijkstra;
-
   bool _pathFindingAlgorithmIsActive = false;
 
   var _algorithmAnimationSpeed = AlgorithmSpeedLevel.medium;
@@ -51,8 +48,6 @@ class PathFindingExecutorService {
 
   Stream<void> get pathFindingFinishedEventStream =>
       _finishedEventStreamController.stream;
-
-  PathFindingAlgorithmSelection get selectedAlgorithm => _selectedAlgorithm;
 
   int get rows => _grid.length;
 
@@ -76,12 +71,12 @@ class PathFindingExecutorService {
           }).toList())
       .toList();
 
-  void startNewPathFinding() {
+  void startNewPathFinding(PathFindingAlgorithmSelection selectedAlgorithm) {
     // make sure stream is cancelled to avoid memory leaks
     _algorithmStreamSubscription?.cancel();
     clearVisitedAndPathNodes();
 
-    _algorithm = _createSelectedAlgorithm();
+    _algorithm = _createAlgorithm(selectedAlgorithm);
     var stream = _algorithm?.execute();
     _pathFindingAlgorithmIsActive = true;
 
@@ -182,10 +177,6 @@ class PathFindingExecutorService {
       NodeStateChange(
           NodeState.unvisited, oldStartNode.row, oldStartNode.column)
     ]);
-  }
-
-  void selectAlgorithm(PathFindingAlgorithmSelection algorithm) {
-    _selectedAlgorithm = algorithm;
   }
 
   void resetGrid() {
@@ -290,8 +281,9 @@ class PathFindingExecutorService {
     startNode.visited = false;
   }
 
-  PathFindingAlgorithm _createSelectedAlgorithm() {
-    switch (_selectedAlgorithm) {
+  PathFindingAlgorithm _createAlgorithm(
+      PathFindingAlgorithmSelection selectedAlgorithm) {
+    switch (selectedAlgorithm) {
       case PathFindingAlgorithmSelection.dijkstra:
         return Dijkstra(
             delayInMilliseconds: _algorithmAnimationSpeed.delay,

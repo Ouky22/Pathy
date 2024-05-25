@@ -50,7 +50,8 @@ void main() {
       expect(pathFindingExecutorService.nodeStateGrid[row][col],
           NodeState.unvisited);
 
-      pathFindingExecutorService.startNewPathFinding();
+      pathFindingExecutorService
+          .startNewPathFinding(PathFindingAlgorithmSelection.aStar);
       pathFindingExecutorService.selectStartNode(row, col);
       expect(pathFindingExecutorService.nodeStateGrid[row][col],
           NodeState.unvisited);
@@ -119,7 +120,8 @@ void main() {
       expect(pathFindingExecutorService.nodeStateGrid[row][col],
           NodeState.unvisited);
 
-      pathFindingExecutorService.startNewPathFinding();
+      pathFindingExecutorService
+          .startNewPathFinding(PathFindingAlgorithmSelection.aStar);
       pathFindingExecutorService.selectTargetNode(row, col);
       expect(pathFindingExecutorService.nodeStateGrid[row][col],
           NodeState.unvisited);
@@ -178,7 +180,8 @@ void main() {
       expect(pathFindingExecutorService.nodeStateGrid[row][col],
           NodeState.unvisited);
 
-      pathFindingExecutorService.startNewPathFinding();
+      pathFindingExecutorService
+          .startNewPathFinding(PathFindingAlgorithmSelection.aStar);
       pathFindingExecutorService.toggleWall(row, col);
 
       expect(pathFindingExecutorService.nodeStateGrid[row][col],
@@ -226,19 +229,6 @@ void main() {
     });
   });
 
-  test("select algorithm", () {
-    var pathFindingExecutorService = PathFindingExecutorService();
-    pathFindingExecutorService
-        .selectAlgorithm(PathFindingAlgorithmSelection.dijkstra);
-    expect(pathFindingExecutorService.selectedAlgorithm,
-        PathFindingAlgorithmSelection.dijkstra);
-
-    pathFindingExecutorService
-        .selectAlgorithm(PathFindingAlgorithmSelection.aStar);
-    expect(pathFindingExecutorService.selectedAlgorithm,
-        PathFindingAlgorithmSelection.aStar);
-  });
-
   group("resize grid", () {
     late PathFindingExecutorService pathFindingExecutorService;
 
@@ -284,7 +274,8 @@ void main() {
       var initialRows = pathFindingExecutorService.rows;
       var initialColumns = pathFindingExecutorService.columns;
 
-      pathFindingExecutorService.startNewPathFinding();
+      pathFindingExecutorService
+          .startNewPathFinding(PathFindingAlgorithmSelection.aStar);
       pathFindingExecutorService.resizeGrid(
           initialRows + 1, initialColumns + 1);
 

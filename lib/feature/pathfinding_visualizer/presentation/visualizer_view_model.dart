@@ -43,8 +43,7 @@ class VisualizerViewModel {
     _speedLevelIndex = ValueNotifier(
         _pathFindingExecutorService.algorithmAnimationSpeed.index);
 
-    _selectedAlgorithm =
-        ValueNotifier(_pathFindingExecutorService.selectedAlgorithm);
+    _selectedAlgorithm = ValueNotifier(PathFindingAlgorithmSelection.dijkstra);
 
     _algorithmSelectionEnabled = ValueNotifier(true);
 
@@ -138,7 +137,7 @@ class VisualizerViewModel {
   }
 
   void _startNewAlgorithm() {
-    _pathFindingExecutorService.startNewPathFinding();
+    _pathFindingExecutorService.startNewPathFinding(selectedAlgorithm.value);
     _algorithmRunningStatus.value = AlgorithmRunningStatus.running;
     _algorithmSelectionEnabled.value = false;
   }
@@ -170,8 +169,7 @@ class VisualizerViewModel {
       return;
     }
 
-    _pathFindingExecutorService.selectAlgorithm(algorithm);
-    _selectedAlgorithm.value = _pathFindingExecutorService.selectedAlgorithm;
+    _selectedAlgorithm.value = algorithm;
   }
 
   void _onGridSizeChanged(double newWidth, double newHeight) {

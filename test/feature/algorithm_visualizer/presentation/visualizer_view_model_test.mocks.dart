@@ -7,15 +7,15 @@ import 'dart:async' as _i4;
 
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:pathy/feature/pathfinding_visualizer/domain/model/algorithm_speed_level.dart'
-    as _i7;
+    as _i6;
 import 'package:pathy/feature/pathfinding_visualizer/domain/model/node.dart'
     as _i2;
 import 'package:pathy/feature/pathfinding_visualizer/domain/model/node_state.dart'
-    as _i8;
+    as _i7;
 import 'package:pathy/feature/pathfinding_visualizer/domain/model/node_state_change.dart'
     as _i5;
 import 'package:pathy/feature/pathfinding_visualizer/domain/model/path_finding_algorithm_selection.dart'
-    as _i6;
+    as _i8;
 import 'package:pathy/feature/pathfinding_visualizer/domain/pathfinding_executor_service.dart'
     as _i3;
 
@@ -122,14 +122,6 @@ class MockPathFindingExecutorService extends _i1.Mock
       ) as _i4.Stream<void>);
 
   @override
-  _i6.PathFindingAlgorithmSelection get selectedAlgorithm =>
-      (super.noSuchMethod(
-        Invocation.getter(#selectedAlgorithm),
-        returnValue: _i6.PathFindingAlgorithmSelection.dijkstra,
-        returnValueForMissingStub: _i6.PathFindingAlgorithmSelection.dijkstra,
-      ) as _i6.PathFindingAlgorithmSelection);
-
-  @override
   int get rows => (super.noSuchMethod(
         Invocation.getter(#rows),
         returnValue: 0,
@@ -144,24 +136,26 @@ class MockPathFindingExecutorService extends _i1.Mock
       ) as int);
 
   @override
-  _i7.AlgorithmSpeedLevel get algorithmAnimationSpeed => (super.noSuchMethod(
+  _i6.AlgorithmSpeedLevel get algorithmAnimationSpeed => (super.noSuchMethod(
         Invocation.getter(#algorithmAnimationSpeed),
-        returnValue: _i7.AlgorithmSpeedLevel.turbo,
-        returnValueForMissingStub: _i7.AlgorithmSpeedLevel.turbo,
-      ) as _i7.AlgorithmSpeedLevel);
+        returnValue: _i6.AlgorithmSpeedLevel.turbo,
+        returnValueForMissingStub: _i6.AlgorithmSpeedLevel.turbo,
+      ) as _i6.AlgorithmSpeedLevel);
 
   @override
-  List<List<_i8.NodeState>> get nodeStateGrid => (super.noSuchMethod(
+  List<List<_i7.NodeState>> get nodeStateGrid => (super.noSuchMethod(
         Invocation.getter(#nodeStateGrid),
-        returnValue: <List<_i8.NodeState>>[],
-        returnValueForMissingStub: <List<_i8.NodeState>>[],
-      ) as List<List<_i8.NodeState>>);
+        returnValue: <List<_i7.NodeState>>[],
+        returnValueForMissingStub: <List<_i7.NodeState>>[],
+      ) as List<List<_i7.NodeState>>);
 
   @override
-  void startNewPathFinding() => super.noSuchMethod(
+  void startNewPathFinding(
+          _i8.PathFindingAlgorithmSelection? selectedAlgorithm) =>
+      super.noSuchMethod(
         Invocation.method(
           #startNewPathFinding,
-          [],
+          [selectedAlgorithm],
         ),
         returnValueForMissingStub: null,
       );
@@ -194,7 +188,7 @@ class MockPathFindingExecutorService extends _i1.Mock
       );
 
   @override
-  void changeAlgorithmAnimationSpeed(_i7.AlgorithmSpeedLevel? speedLevel) =>
+  void changeAlgorithmAnimationSpeed(_i6.AlgorithmSpeedLevel? speedLevel) =>
       super.noSuchMethod(
         Invocation.method(
           #changeAlgorithmAnimationSpeed,
@@ -247,16 +241,6 @@ class MockPathFindingExecutorService extends _i1.Mock
             row,
             column,
           ],
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  void selectAlgorithm(_i6.PathFindingAlgorithmSelection? algorithm) =>
-      super.noSuchMethod(
-        Invocation.method(
-          #selectAlgorithm,
-          [algorithm],
         ),
         returnValueForMissingStub: null,
       );
