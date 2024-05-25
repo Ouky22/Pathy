@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pathy/feature/pathfinding_visualizer/presentation/visualizer_view_model.dart';
 
-import '../../domain/model/algorithm_running_status.dart';
 import '../../domain/model/path_finding_algorithm_selection.dart';
 import '../visualizer_event.dart';
 import 'algorithm_dropdown_menu.dart';
@@ -17,22 +16,19 @@ class VisualizerControlSection extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         ValueListenableBuilder(
-            valueListenable: viewModel.algorithmRunningStatus,
-            builder: (context, algorithmRunningStatus, child) {
-              return ElevatedButton(
-                  onPressed: () {
-                    viewModel.onEvent(ClearResetButtonClick());
+          valueListenable: viewModel.algorithmSelectionEnabled,
+          builder: (context, algorithmSelectionEnabled, child) {
+            return ValueListenableBuilder<PathFindingAlgorithmSelection>(
+              valueListenable: viewModel.selectedAlgorithm,
+              builder: (context, selectedAlgorithm, child) {
+                return AlgorithmDropdownMenu(
+                  algorithmSelectionEnabled: algorithmSelectionEnabled,
+                  selectedAlgorithm: selectedAlgorithm,
+                  onSelected: (PathFindingAlgorithmSelection algorithm) {
+                    viewModel.onEvent(SelectAlgorithm(algorithm: algorithm));
                   },
-                  child: Text(_clearResetButtonText(algorithmRunningStatus)));
-            }),
-        ValueListenableBuilder(
-          valueListenable: viewModel.algorithmRunningStatus,
-          builder: (context, algorithmRunningStatus, child) {
-            return ElevatedButton(
-              onPressed: () {
-                viewModel.onEvent(PlayPauseButtonClick());
+                );
               },
-              child: Text(_playPauseButtonText(algorithmRunningStatus)),
             );
           },
         ),
@@ -52,46 +48,7 @@ class VisualizerControlSection extends StatelessWidget {
             );
           },
         ),
-        ValueListenableBuilder(
-          valueListenable: viewModel.algorithmSelectionEnabled,
-          builder: (context, algorithmSelectionEnabled, child) {
-            return ValueListenableBuilder<PathFindingAlgorithmSelection>(
-              valueListenable: viewModel.selectedAlgorithm,
-              builder: (context, selectedAlgorithm, child) {
-                return AlgorithmDropdownMenu(
-                  algorithmSelectionEnabled: algorithmSelectionEnabled,
-                  selectedAlgorithm: selectedAlgorithm,
-                  onSelected: (PathFindingAlgorithmSelection algorithm) {
-                    viewModel.onEvent(SelectAlgorithm(algorithm: algorithm));
-                  },
-                );
-              },
-            );
-          },
-        )
       ],
     );
-  }
-
-  String _playPauseButtonText(AlgorithmRunningStatus algorithmRunningStatus) {
-    switch (algorithmRunningStatus) {
-      case AlgorithmRunningStatus.stopped:
-      case AlgorithmRunningStatus.paused:
-      case AlgorithmRunningStatus.finished:
-        return "Play";
-      case AlgorithmRunningStatus.running:
-        return "Pause";
-    }
-  }
-
-  String _clearResetButtonText(AlgorithmRunningStatus algorithmRunningStatus) {
-    switch (algorithmRunningStatus) {
-      case AlgorithmRunningStatus.stopped:
-        return "Reset";
-      case AlgorithmRunningStatus.running:
-      case AlgorithmRunningStatus.paused:
-      case AlgorithmRunningStatus.finished:
-        return "Clear";
-    }
   }
 }
