@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pathy/feature/pathfinding_visualizer/domain/pathfinding_executor_service.dart';
 import 'package:pathy/feature/pathfinding_visualizer/presentation/visualizer_event.dart';
@@ -183,8 +184,13 @@ class VisualizerViewModel {
 
     if (_algorithmRunningStatus.value == AlgorithmRunningStatus.running) {
       _pathFindingExecutorService.stopPathFinding();
-      _algorithmRunningStatus.value = AlgorithmRunningStatus.stopped;
-      _algorithmSelectionEnabled.value = true;
+
+      // because GridSizeChangesEvents are called in the build method of the
+      // grid widget we need to wait until the next frame
+      WidgetsFlutterBinding.ensureInitialized().addPostFrameCallback((_) {
+        _algorithmRunningStatus.value = AlgorithmRunningStatus.stopped;
+        _algorithmSelectionEnabled.value = true;
+      });
     }
     _pathFindingExecutorService.resizeGrid(newRows, newColumns);
     _grid = _pathFindingExecutorService.nodeStateGrid
