@@ -339,4 +339,39 @@ void main() {
           NodeState.start);
     });
   });
+
+  group("start and target node init position", () {
+    late PathFindingExecutorService pathFindingExecutorService;
+
+    setUp(() {
+      pathFindingExecutorService = PathFindingExecutorService();
+    });
+
+    test("move to init position", () {
+      pathFindingExecutorService.resizeGrid(10, 10);
+      pathFindingExecutorService.moveStartAndTargetToStartPosition();
+
+      var startRow = pathFindingExecutorService.startNode.row;
+      var startCol = pathFindingExecutorService.startNode.column;
+      var targetRow = pathFindingExecutorService.targetNode.row;
+      var targetCol = pathFindingExecutorService.targetNode.column;
+
+      expect(startRow, pathFindingExecutorService.rows ~/ 2);
+      expect(startCol, 1);
+      expect(targetRow, pathFindingExecutorService.rows ~/ 2);
+      expect(targetCol, pathFindingExecutorService.columns - 3);
+    });
+
+    test("correct init position", () {
+      var startRow = pathFindingExecutorService.startNode.row;
+      var startCol = pathFindingExecutorService.startNode.column;
+      var targetRow = pathFindingExecutorService.targetNode.row;
+      var targetCol = pathFindingExecutorService.targetNode.column;
+
+      expect(startRow, pathFindingExecutorService.rows ~/ 2);
+      expect(startCol, 1);
+      expect(targetRow, pathFindingExecutorService.rows ~/ 2);
+      expect(targetCol, pathFindingExecutorService.columns - 3);
+    });
+  });
 }

@@ -255,6 +255,15 @@ class MockPathFindingExecutorService extends _i1.Mock
       );
 
   @override
+  void moveStartAndTargetToStartPosition() => super.noSuchMethod(
+        Invocation.method(
+          #moveStartAndTargetToStartPosition,
+          [],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
   void clearVisitedAndPathNodes() => super.noSuchMethod(
         Invocation.method(
           #clearVisitedAndPathNodes,

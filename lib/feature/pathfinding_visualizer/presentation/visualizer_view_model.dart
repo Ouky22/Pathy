@@ -28,6 +28,7 @@ class VisualizerViewModel {
   bool _targetNodeIsDragged = false;
   bool _startNodeIsDragged = false;
   bool _wallNodeMultiSelectionActive = false;
+  bool _startAndTargetNodeStartPositionInitialized = false;
 
   int lastNodePanedRow = -1;
   int lastNodePanedColumn = -1;
@@ -196,6 +197,11 @@ class VisualizerViewModel {
     _grid = _pathFindingExecutorService.nodeStateGrid
         .map((row) => row.map((nodeState) => ValueNotifier(nodeState)).toList())
         .toList();
+
+    if (!_startAndTargetNodeStartPositionInitialized) {
+      _pathFindingExecutorService.moveStartAndTargetToStartPosition();
+      _startAndTargetNodeStartPositionInitialized = true;
+    }
   }
 
   void _startTargetNodeDrag() {

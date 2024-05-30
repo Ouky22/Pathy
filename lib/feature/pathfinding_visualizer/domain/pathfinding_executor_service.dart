@@ -39,8 +39,13 @@ class PathFindingExecutorService {
   StreamSubscription? _algorithmStreamSubscription;
 
   PathFindingExecutorService() {
-    startNode = _grid[5][5];
-    targetNode = _grid[10][10];
+    var initStartNodeRow = rows ~/ 2;
+    var initStartNodeColumn = 1;
+    var initTargetNodeRow = rows ~/ 2;
+    var initTargetNodeColumn = columns - 3;
+
+    startNode = _grid[initStartNodeRow][initStartNodeColumn];
+    targetNode = _grid[initTargetNodeRow][initTargetNodeColumn];
   }
 
   Stream<List<NodeStateChange>> get nodeStateChangeStream =>
@@ -192,6 +197,30 @@ class PathFindingExecutorService {
       }
     }
     _gridStreamController.add(nodeStateChanges);
+    moveStartAndTargetToStartPosition();
+  }
+
+  void moveStartAndTargetToStartPosition() {
+    var oldStartNodeRow = startNode.row;
+    var oldStartNodeColumn = startNode.column;
+    var oldTargetNodeRow = targetNode.row;
+    var oldTargetNodeColumn = targetNode.column;
+
+    var newStartNodeRow = rows ~/ 2;
+    var newStartNodeColumn = 1;
+    var newTargetNodeRow = rows ~/ 2;
+    var newTargetNodeColumn = columns - 3;
+
+    startNode = _grid[newStartNodeRow][newStartNodeColumn];
+    targetNode = _grid[newTargetNodeRow][newTargetNodeColumn];
+
+    _gridStreamController.add([
+      NodeStateChange(NodeState.unvisited, oldStartNodeRow, oldStartNodeColumn),
+      NodeStateChange(
+          NodeState.unvisited, oldTargetNodeRow, oldTargetNodeColumn),
+      NodeStateChange(NodeState.start, newStartNodeRow, newStartNodeColumn),
+      NodeStateChange(NodeState.target, newTargetNodeRow, newTargetNodeColumn),
+    ]);
   }
 
   void clearVisitedAndPathNodes() {

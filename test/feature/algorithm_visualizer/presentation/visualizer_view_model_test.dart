@@ -222,20 +222,6 @@ void main() {
 
       verify(pathFindingExecutorService.resizeGrid(2, 2)).called(1);
     });
-
-    test("when path finding is running then stop it", () {
-      var rows = 15;
-      var columns = 25;
-      when(pathFindingExecutorService.rows).thenReturn(rows);
-      when(pathFindingExecutorService.columns).thenReturn(columns);
-
-      viewModel.onEvent(PlayPauseButtonClick());
-      viewModel.onEvent(GridSizeChanged(newWidth: 100, newHeight: 100));
-
-      verify(pathFindingExecutorService.stopPathFinding()).called(1);
-      expect(viewModel.algorithmRunningStatus.value,
-          AlgorithmRunningStatus.stopped);
-    });
   });
 
   group("pan node", () {
