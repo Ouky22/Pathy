@@ -65,17 +65,17 @@ class GridCellState extends State<GridCell> {
   Color _determineNodeColor({required NodeState nodeState}) {
     switch (nodeState) {
       case NodeState.visited:
-        return Colors.teal;
+        return Colors.blueGrey.shade400;
       case NodeState.unvisited:
-        return Colors.white70;
+        return Colors.white;
       case NodeState.wall:
-        return Colors.black38;
+        return Colors.blueGrey.shade900;
       case NodeState.path:
-        return Colors.orangeAccent;
+        return Colors.orange.shade600;
       case NodeState.start:
-        return Colors.green;
+        return Colors.green.shade600;
       case NodeState.target:
-        return Colors.red;
+        return Colors.red.shade600;
     }
   }
 }
