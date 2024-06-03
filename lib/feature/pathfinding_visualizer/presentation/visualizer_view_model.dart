@@ -205,13 +205,15 @@ class VisualizerViewModel {
   }
 
   void _startTargetNodeDrag() {
-    if (_algorithmRunningStatus.value == AlgorithmRunningStatus.stopped) {
+    if (_algorithmRunningStatus.value == AlgorithmRunningStatus.stopped ||
+        _algorithmRunningStatus.value == AlgorithmRunningStatus.finished) {
       _targetNodeIsDragged = true;
     }
   }
 
   void _startStartNodeDrag() {
-    if (_algorithmRunningStatus.value == AlgorithmRunningStatus.stopped) {
+    if (_algorithmRunningStatus.value == AlgorithmRunningStatus.stopped ||
+        _algorithmRunningStatus.value == AlgorithmRunningStatus.finished) {
       _startNodeIsDragged = true;
     }
   }
@@ -223,25 +225,36 @@ class VisualizerViewModel {
   }
 
   void _onNodePan(int row, int column) {
+    if (lastNodePanedColumn == column && lastNodePanedRow == row) {
+      return;
+    }
+
     if (_targetNodeIsDragged) {
       _pathFindingExecutorService.selectTargetNode(row, column);
+
+      if (_algorithmRunningStatus.value == AlgorithmRunningStatus.finished) {
+        _pathFindingExecutorService.startNewPathFinding(selectedAlgorithm.value,
+            fastModeActive: true);
+      }
     } else if (_startNodeIsDragged) {
       _pathFindingExecutorService.selectStartNode(row, column);
-    } else if (_wallNodeMultiSelectionActive) {
-      if (lastNodePanedRow != row || lastNodePanedColumn != column) {
-        _pathFindingExecutorService.toggleWall(row, column);
-        lastNodePanedRow = row;
-        lastNodePanedColumn = column;
+
+      if (_algorithmRunningStatus.value == AlgorithmRunningStatus.finished) {
+        _pathFindingExecutorService.startNewPathFinding(selectedAlgorithm.value,
+            fastModeActive: true);
       }
+    } else if (_wallNodeMultiSelectionActive) {
+      _pathFindingExecutorService.toggleWall(row, column);
     }
+
+    lastNodePanedRow = row;
+    lastNodePanedColumn = column;
   }
 
   void _endNodeDrag() {
     _targetNodeIsDragged = false;
     _startNodeIsDragged = false;
     _wallNodeMultiSelectionActive = false;
-    lastNodePanedRow = -1;
-    lastNodePanedColumn = -1;
   }
 
   int get rows => _grid.length;

@@ -9,12 +9,14 @@ abstract class PathFindingAlgorithm {
   late final Node startNode;
   late final Node targetNode;
   int delayInMilliseconds;
+  bool fastModeActive;
 
   PathFindingAlgorithm(
       {required grid,
       required startNode,
       required targetNode,
-      required this.delayInMilliseconds}) {
+      required this.delayInMilliseconds,
+      this.fastModeActive = false}) {
     _initializeNodeGridAndStartAndTargetNode(grid, startNode, targetNode);
   }
 
@@ -72,7 +74,10 @@ abstract class PathFindingAlgorithm {
     for (var node in shortestPath) {
       if (node != startNode && node != targetNode) {
         yield NodeStateChange(NodeState.path, node.row, node.column);
-        await Future<void>.delayed(Duration(milliseconds: delayInMilliseconds));
+        if (!fastModeActive) {
+          await Future<void>.delayed(
+              Duration(milliseconds: delayInMilliseconds));
+        }
       }
     }
   }

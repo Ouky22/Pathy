@@ -76,12 +76,13 @@ class PathFindingExecutorService {
           }).toList())
       .toList();
 
-  void startNewPathFinding(PathFindingAlgorithmSelection selectedAlgorithm) {
+  void startNewPathFinding(PathFindingAlgorithmSelection selectedAlgorithm,
+      {bool fastModeActive = false}) {
     // make sure stream is cancelled to avoid memory leaks
     _algorithmStreamSubscription?.cancel();
     clearVisitedAndPathNodes();
 
-    _algorithm = _createAlgorithm(selectedAlgorithm);
+    _algorithm = _createAlgorithm(selectedAlgorithm, fastModeActive);
     var stream = _algorithm?.execute();
     _pathFindingAlgorithmIsActive = true;
 
@@ -156,6 +157,7 @@ class PathFindingExecutorService {
 
     var oldTargetNode = targetNode;
     targetNode = node;
+    targetNode.visited = false;
     _gridStreamController.add([
       NodeStateChange(NodeState.target, row, column),
       NodeStateChange(
@@ -177,6 +179,7 @@ class PathFindingExecutorService {
 
     var oldStartNode = startNode;
     startNode = node;
+    startNode.visited = false;
     _gridStreamController.add([
       NodeStateChange(NodeState.start, row, column),
       NodeStateChange(
@@ -311,20 +314,22 @@ class PathFindingExecutorService {
   }
 
   PathFindingAlgorithm _createAlgorithm(
-      PathFindingAlgorithmSelection selectedAlgorithm) {
+      PathFindingAlgorithmSelection selectedAlgorithm, bool fastModeActive) {
     switch (selectedAlgorithm) {
       case PathFindingAlgorithmSelection.dijkstra:
         return Dijkstra(
             delayInMilliseconds: _algorithmAnimationSpeed.delay,
             grid: _grid,
             startNode: startNode,
-            targetNode: targetNode);
+            targetNode: targetNode,
+            fastModeActive: fastModeActive);
       case PathFindingAlgorithmSelection.aStar:
         return AStar(
             delayInMilliseconds: _algorithmAnimationSpeed.delay,
             grid: _grid,
             startNode: startNode,
-            targetNode: targetNode);
+            targetNode: targetNode,
+            fastModeActive: fastModeActive);
     }
   }
 

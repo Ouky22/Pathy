@@ -12,7 +12,8 @@ class AStar extends PathFindingAlgorithm {
       {required super.grid,
       required super.startNode,
       required super.targetNode,
-      required super.delayInMilliseconds});
+      required super.delayInMilliseconds,
+      super.fastModeActive = false});
 
   @override
   Stream<NodeStateChange> execute() async* {
@@ -53,7 +54,10 @@ class AStar extends PathFindingAlgorithm {
       } else if (currentlyVisitedNode != startNode) {
         yield NodeStateChange(NodeState.visited, currentlyVisitedNode.row,
             currentlyVisitedNode.column);
-        await Future<void>.delayed(Duration(milliseconds: delayInMilliseconds));
+        if (!fastModeActive) {
+          await Future<void>.delayed(
+              Duration(milliseconds: delayInMilliseconds));
+        }
       }
     }
   }

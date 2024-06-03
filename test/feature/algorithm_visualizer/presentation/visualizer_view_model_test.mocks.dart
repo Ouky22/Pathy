@@ -151,11 +151,14 @@ class MockPathFindingExecutorService extends _i1.Mock
 
   @override
   void startNewPathFinding(
-          _i8.PathFindingAlgorithmSelection? selectedAlgorithm) =>
+    _i8.PathFindingAlgorithmSelection? selectedAlgorithm, {
+    bool? fastModeActive = false,
+  }) =>
       super.noSuchMethod(
         Invocation.method(
           #startNewPathFinding,
           [selectedAlgorithm],
+          {#fastModeActive: fastModeActive},
         ),
         returnValueForMissingStub: null,
       );
