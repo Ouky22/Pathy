@@ -25,6 +25,8 @@ class VisualizerViewModel {
 
   late ValueNotifier<bool> _algorithmSelectionEnabled;
 
+  late ValueNotifier<bool> _cellAnimationActive;
+
   bool _targetNodeIsDragged = false;
   bool _startNodeIsDragged = false;
   bool _wallNodeMultiSelectionActive = false;
@@ -56,7 +58,10 @@ class VisualizerViewModel {
 
     _pathFindingExecutorService.pathFindingFinishedEventStream.listen((_) {
       _algorithmRunningStatus.value = AlgorithmRunningStatus.finished;
+      _cellAnimationActive.value = false;
     });
+
+    _cellAnimationActive = ValueNotifier(true);
   }
 
   void onEvent(VisualizerEvent event) {
@@ -142,6 +147,7 @@ class VisualizerViewModel {
     _pathFindingExecutorService.startNewPathFinding(selectedAlgorithm.value);
     _algorithmRunningStatus.value = AlgorithmRunningStatus.running;
     _algorithmSelectionEnabled.value = false;
+    _cellAnimationActive.value = true;
   }
 
   void _onChangeAlgorithmAnimationSpeed(int newSpeedLevelIndex) {
@@ -273,4 +279,6 @@ class VisualizerViewModel {
 
   ValueListenable<bool> get algorithmSelectionEnabled =>
       _algorithmSelectionEnabled;
+
+  ValueListenable<bool> get cellAnimationActive => _cellAnimationActive;
 }

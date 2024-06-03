@@ -6,6 +6,7 @@ import '../../domain/model/node_state.dart';
 
 class GridCell extends StatefulWidget {
   final ValueListenable<NodeState> nodeStateListenable;
+  final ValueListenable<bool> animationActiveListenable;
   final void Function() onTab;
   final void Function(Offset globalPosition) onPanUpdate;
   final void Function() onPanStart;
@@ -14,6 +15,7 @@ class GridCell extends StatefulWidget {
   const GridCell({
     super.key,
     required this.nodeStateListenable,
+    required this.animationActiveListenable,
     required this.onTab,
     required this.onPanUpdate,
     required this.onPanStart,
@@ -45,17 +47,23 @@ class GridCellState extends State<GridCell> {
       child: ValueListenableBuilder<NodeState>(
         valueListenable: widget.nodeStateListenable,
         builder: (context, nodeState, child) {
-          return AnimatedContainer(
-            height: cellSize,
-            width: cellSize,
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.black, width: 0.3),
-              color: _determineNodeColor(nodeState: nodeState),
-            ),
-            duration: nodeState != _previousNodeState &&
-                    nodeState == NodeState.visited
-                ? const Duration(milliseconds: 512)
-                : Duration.zero,
+          return ValueListenableBuilder(
+            valueListenable: widget.animationActiveListenable,
+            builder: (context, animationActive, child) {
+              return AnimatedContainer(
+                height: cellSize,
+                width: cellSize,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black, width: 0.3),
+                  color: _determineNodeColor(nodeState: nodeState),
+                ),
+                duration: nodeState != _previousNodeState &&
+                        nodeState == NodeState.visited &&
+                        animationActive
+                    ? const Duration(milliseconds: 512)
+                    : Duration.zero,
+              );
+            },
           );
         },
       ),

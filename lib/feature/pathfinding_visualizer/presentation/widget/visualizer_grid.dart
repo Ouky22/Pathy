@@ -47,6 +47,7 @@ class VisualizerGrid extends StatelessWidget {
 
               return GridCell(
                   nodeStateListenable: viewModel.grid[gridRow][gridColumn],
+                  animationActiveListenable: viewModel.cellAnimationActive,
                   onTab: () => viewModel.onEvent(
                       ToggleWallNode(row: gridRow, column: gridColumn)),
                   onPanStart: () => {
