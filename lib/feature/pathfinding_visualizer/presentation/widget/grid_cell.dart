@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../../../../constants.dart';
 import '../../domain/model/node_state.dart';
 
-class GridCell extends StatefulWidget {
+class GridCell extends StatelessWidget {
   final ValueListenable<NodeState> nodeStateListenable;
   final ValueListenable<bool> animationActiveListenable;
   final void Function() onTab;
@@ -23,32 +23,17 @@ class GridCell extends StatefulWidget {
   });
 
   @override
-  GridCellState createState() => GridCellState();
-}
-
-class GridCellState extends State<GridCell> {
-  NodeState? _previousNodeState;
-
-  @override
-  void didUpdateWidget(covariant GridCell oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.nodeStateListenable.value != _previousNodeState) {
-      _previousNodeState = widget.nodeStateListenable.value;
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => widget.onTab(),
-      onPanUpdate: (details) => widget.onPanUpdate(details.globalPosition),
-      onPanStart: (details) => widget.onPanStart(),
-      onPanEnd: (details) => widget.onPanEnd(),
+      onTap: () => onTab(),
+      onPanUpdate: (details) => onPanUpdate(details.globalPosition),
+      onPanStart: (details) => onPanStart(),
+      onPanEnd: (details) => onPanEnd(),
       child: ValueListenableBuilder<NodeState>(
-        valueListenable: widget.nodeStateListenable,
+        valueListenable: nodeStateListenable,
         builder: (context, nodeState, child) {
           return ValueListenableBuilder(
-            valueListenable: widget.animationActiveListenable,
+            valueListenable: animationActiveListenable,
             builder: (context, animationActive, child) {
               return AnimatedContainer(
                 height: cellSize,
@@ -57,9 +42,7 @@ class GridCellState extends State<GridCell> {
                   border: Border.all(color: Colors.black, width: 0.3),
                   color: _determineNodeColor(nodeState: nodeState),
                 ),
-                duration: nodeState != _previousNodeState &&
-                        nodeState == NodeState.visited &&
-                        animationActive
+                duration: nodeState == NodeState.visited && animationActive
                     ? const Duration(milliseconds: 512)
                     : Duration.zero,
               );
