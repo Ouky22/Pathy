@@ -32,7 +32,8 @@ class PathFindingExecutorService {
 
   var _algorithmAnimationSpeed = AlgorithmSpeedLevel.medium;
 
-  final _gridStreamController = StreamController<List<NodeStateChange>>();
+  final _nodeStateChangeStreamController =
+      StreamController<List<NodeStateChange>>();
 
   final _finishedEventStreamController = StreamController<void>();
 
@@ -49,7 +50,7 @@ class PathFindingExecutorService {
   }
 
   Stream<List<NodeStateChange>> get nodeStateChangeStream =>
-      _gridStreamController.stream;
+      _nodeStateChangeStreamController.stream;
 
   Stream<void> get pathFindingFinishedEventStream =>
       _finishedEventStreamController.stream;
@@ -90,7 +91,7 @@ class PathFindingExecutorService {
       if (nodeStateChange.newState == NodeState.visited) {
         _grid[nodeStateChange.row][nodeStateChange.column].visited = true;
       }
-      _gridStreamController.add([nodeStateChange]);
+      _nodeStateChangeStreamController.add([nodeStateChange]);
     }, onError: (error) {
       if (error is NoPathToTargetException) {
         // TODO
@@ -137,7 +138,7 @@ class PathFindingExecutorService {
     }
 
     node.isWall = !node.isWall;
-    _gridStreamController.add([
+    _nodeStateChangeStreamController.add([
       NodeStateChange(
           node.isWall ? NodeState.wall : NodeState.unvisited, row, column)
     ]);
@@ -158,7 +159,7 @@ class PathFindingExecutorService {
     var oldTargetNode = targetNode;
     targetNode = node;
     targetNode.visited = false;
-    _gridStreamController.add([
+    _nodeStateChangeStreamController.add([
       NodeStateChange(NodeState.target, row, column),
       NodeStateChange(
           NodeState.unvisited, oldTargetNode.row, oldTargetNode.column)
@@ -180,7 +181,7 @@ class PathFindingExecutorService {
     var oldStartNode = startNode;
     startNode = node;
     startNode.visited = false;
-    _gridStreamController.add([
+    _nodeStateChangeStreamController.add([
       NodeStateChange(NodeState.start, row, column),
       NodeStateChange(
           NodeState.unvisited, oldStartNode.row, oldStartNode.column)
@@ -199,7 +200,7 @@ class PathFindingExecutorService {
         }
       }
     }
-    _gridStreamController.add(nodeStateChanges);
+    _nodeStateChangeStreamController.add(nodeStateChanges);
     moveStartAndTargetToStartPosition();
   }
 
@@ -217,7 +218,7 @@ class PathFindingExecutorService {
     startNode = _grid[newStartNodeRow][newStartNodeColumn];
     targetNode = _grid[newTargetNodeRow][newTargetNodeColumn];
 
-    _gridStreamController.add([
+    _nodeStateChangeStreamController.add([
       NodeStateChange(NodeState.unvisited, oldStartNodeRow, oldStartNodeColumn),
       NodeStateChange(
           NodeState.unvisited, oldTargetNodeRow, oldTargetNodeColumn),
@@ -240,7 +241,7 @@ class PathFindingExecutorService {
         }
       }
     }
-    _gridStreamController.add(nodeStateChanges);
+    _nodeStateChangeStreamController.add(nodeStateChanges);
   }
 
   void resizeGrid(int newRows, int newColumns) {
