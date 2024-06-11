@@ -27,4 +27,3 @@ The path is visualized by changing the color of the cells that are part of the p
 
 - Linux
 - Android
-- Web (Chrome), but visualization tends to be slow depending on the window size
