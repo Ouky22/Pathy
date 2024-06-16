@@ -157,7 +157,8 @@ class VisualizerViewModel {
   }
 
   void _toggleWall(int row, int column) {
-    if (_algorithmRunningStatus.value != AlgorithmRunningStatus.stopped) {
+    if (_algorithmRunningStatus.value != AlgorithmRunningStatus.stopped &&
+        _algorithmRunningStatus.value != AlgorithmRunningStatus.finished) {
       return;
     }
 
@@ -225,7 +226,8 @@ class VisualizerViewModel {
   }
 
   void _startWallNodeMultiSelection() {
-    if (_algorithmRunningStatus.value == AlgorithmRunningStatus.stopped) {
+    if (_algorithmRunningStatus.value == AlgorithmRunningStatus.stopped ||
+        _algorithmRunningStatus.value == AlgorithmRunningStatus.finished) {
       _wallNodeMultiSelectionActive = true;
     }
   }
