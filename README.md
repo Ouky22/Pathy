@@ -6,11 +6,10 @@ A visualizer for pathfinding algorithms.
 
 ## Description
 
-Pathfinding algorithms are used to find the path between two points in a graph. This application 
-visualizes the finding of the path between two points. The visualization is done on a grid 
-where each cell represents a node in the graph. The start and end nodes are represented by 
-a green and red cell, respectively. The path is visualized by changing the color of the cells 
-that are part of the path.
+Pathy visualizes the finding of the path between two nodes in a graph. 
+The visualization is done on a grid where each cell represents a node in the graph. 
+The start and end nodes are represented by a green and red node, respectively. 
+The path is visualized by changing the color of the cells that are part of the path.
 
 ## Features
 
@@ -28,4 +27,5 @@ that are part of the path.
 Pathy has been tested on the following platforms:
 - Linux
 - Android
+
 Since Pathy doesn't use any platform-specific code, it should work on other platforms as well.
