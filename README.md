@@ -25,5 +25,7 @@ The path is visualized by changing the color of the cells that are part of the p
 
 ## Supported platforms
 
+Pathy has been tested on the following platforms:
 - Linux
 - Android
+Since Pathy doesn't use any platform-specific code, it should work on other platforms as well.
