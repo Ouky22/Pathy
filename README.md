@@ -6,15 +6,15 @@ A visualizer for pathfinding algorithms.
 
 ## Description
 
-Pathfinding algorithms are used to find the optimal (e.g. the shortest or the most cost-effective)
-path between two points in a graph. This application focuses on the visualization of finding the
-shortest path between two points. The visualization is done on a grid where each cell represents
-a node in the graph. The start and end nodes are represented by a green and red cell, respectively.
-The path is visualized by changing the color of the cells that are part of the path.
+Pathfinding algorithms are used to find the path between two points in a graph. This application 
+visualizes the finding of the path between two points. The visualization is done on a grid 
+where each cell represents a node in the graph. The start and end nodes are represented by 
+a green and red cell, respectively. The path is visualized by changing the color of the cells 
+that are part of the path.
 
 ## Features
 
-- Visualize pathfinding algorithms (A* and Dijkstra)
+- Visualize pathfinding algorithms (Dijkstra, A*, Breadth-First Search, Depth-First Search)
 - Change the visualization speed
 - Pause and resume the visualization
 - Set walls
