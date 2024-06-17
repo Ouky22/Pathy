@@ -16,62 +16,69 @@ class VisualizerGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
       // on Android, the top bar height is not included in the constraints
+      // so it must be subtracted manually
       final topBarHeight = MediaQuery.of(context).viewPadding.top;
-      final availableWidth = constraints.maxWidth;
       final availableHeight = constraints.maxHeight - topBarHeight;
       viewModel.onEvent(GridSizeChanged(
-          newWidth: availableWidth, newHeight: availableHeight));
+          newWidth: constraints.maxWidth, newHeight: availableHeight));
 
-      final rows = viewModel.rows;
-      final columns = viewModel.columns;
-
-      // padding must be defined depending on the screen size so that the grid is always rectangular
-      final horizontalPadding =
-          max(constraints.maxWidth - (columns * cellSize), 0) / 2;
-      final verticalPadding =
-          max(constraints.maxHeight - topBarHeight - (rows * cellSize), 0) / 2;
-
+      // padding must be defined depending on the screen size
+      // so that the grid is always rectangular
+      final padding = _calculatePadding(constraints.maxWidth, availableHeight);
       return Padding(
-          padding: EdgeInsets.symmetric(
-              horizontal: horizontalPadding, vertical: verticalPadding),
+          padding: padding,
           child: GridView.builder(
             gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
               maxCrossAxisExtent: cellSize,
               childAspectRatio: 1.0,
             ),
             physics: const NeverScrollableScrollPhysics(),
-            itemCount: rows * columns,
-            itemBuilder: (context, index) {
-              int gridRow = index ~/ viewModel.grid[0].length;
-              int gridColumn = index % viewModel.grid[0].length;
-
-              return GridCell(
-                  nodeStateListenable: viewModel.grid[gridRow][gridColumn],
-                  animationActiveListenable: viewModel.cellAnimationActive,
-                  onTab: () => viewModel.onEvent(
-                      ToggleWallNode(row: gridRow, column: gridColumn)),
-                  onPanStart: () => {
-                        if (viewModel.grid[gridRow][gridColumn].value ==
-                            NodeState.target)
-                          {viewModel.onEvent(StartTargetNodeDrag())}
-                        else if (viewModel.grid[gridRow][gridColumn].value ==
-                            NodeState.start)
-                          {viewModel.onEvent(StartStartNodeDrag())}
-                        else
-                          {viewModel.onEvent(StartWallNodeMultiSelection())}
-                      },
-                  onPanEnd: () => viewModel.onEvent(StopNodeDrag()),
-                  onPanUpdate: (globalPosition) {
-                    var currentPosition = _convertToGridPosition(globalPosition,
-                        horizontalPadding, verticalPadding + topBarHeight);
-                    var columns = (currentPosition.dx / cellSize).floor();
-                    var rows = (currentPosition.dy / cellSize).floor();
-
-                    viewModel.onEvent(PanNode(row: rows, column: columns));
-                  });
-            },
+            itemCount: viewModel.rows * viewModel.columns,
+            itemBuilder: (context, index) =>
+                _buildGridCell(index, padding, topBarHeight),
           ));
     });
+  }
+
+  Widget _buildGridCell(
+      int index, EdgeInsets gridPadding, double topBarHeight) {
+    final currentRow = index ~/ viewModel.grid[0].length;
+    final currentColumn = index % viewModel.grid[0].length;
+    final nodeStateListenable = viewModel.grid[currentRow][currentColumn];
+
+    return GridCell(
+        nodeStateListenable: nodeStateListenable,
+        animationActiveListenable: viewModel.cellAnimationActive,
+        onTab: () => viewModel
+            .onEvent(ToggleWallNode(row: currentRow, column: currentColumn)),
+        onPanStart: () => {
+              if (nodeStateListenable.value == NodeState.target)
+                {viewModel.onEvent(StartTargetNodeDrag())}
+              else if (nodeStateListenable.value == NodeState.start)
+                {viewModel.onEvent(StartStartNodeDrag())}
+              else
+                {viewModel.onEvent(StartWallNodeMultiSelection())}
+            },
+        onPanEnd: () => viewModel.onEvent(StopNodeDrag()),
+        onPanUpdate: (globalPosition) {
+          var currentPosition = _convertToGridPosition(globalPosition,
+              gridPadding.horizontal, gridPadding.vertical + topBarHeight);
+          var columns = (currentPosition.dx / cellSize).floor();
+          var rows = (currentPosition.dy / cellSize).floor();
+
+          viewModel.onEvent(PanNode(row: rows, column: columns));
+        });
+  }
+
+  EdgeInsets _calculatePadding(double availableWidth, double availableHeight) {
+    final rows = viewModel.rows;
+    final columns = viewModel.columns;
+
+    final horizontalPadding = max(availableWidth - (columns * cellSize), 0) / 2;
+    final verticalPadding = max(availableHeight - (rows * cellSize), 0) / 2;
+
+    return EdgeInsets.symmetric(
+        horizontal: horizontalPadding, vertical: verticalPadding);
   }
 
   Offset _convertToGridPosition(
