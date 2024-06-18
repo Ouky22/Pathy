@@ -16,30 +16,39 @@ void main() {
     });
 
     testWidgets(
-        "Should display correct icon for floating action buttons based on AlgorithmRunningStatus",
+        "Should display correct icon for floating action buttons when AlgorithmRunningStatus is stopped",
         (WidgetTester tester) async {
       await tester.pumpWidget(
           MaterialApp(home: PathfindingVisualizerPage(viewModel: viewModel)));
 
-      // Test for AlgorithmRunningStatus.stopped
       await tester.pump();
       expect(find.byIcon(Icons.play_arrow), findsOneWidget);
       expect(find.byIcon(Icons.restart_alt), findsOneWidget);
+    });
 
-      // Test for AlgorithmRunningStatus.running
+    testWidgets(
+        "Should display correct icon for floating action buttons when AlgorithmRunningStatus is running",
+        (WidgetTester tester) async {
+      await tester.pumpWidget(
+          MaterialApp(home: PathfindingVisualizerPage(viewModel: viewModel)));
+
       viewModel.onEvent(PlayPauseButtonClick());
       await tester.pump();
       expect(find.byIcon(Icons.pause), findsOneWidget);
       expect(find.byIcon(Icons.clear), findsOneWidget);
+      viewModel.onEvent(PlayPauseButtonClick());
+      await tester.pumpAndSettle();
+    });
 
-      // Test for AlgorithmRunningStatus.paused
+    testWidgets(
+        "Should display correct icon for floating action buttons when AlgorithmRunningStatus is paused",
+        (WidgetTester tester) async {
+      await tester.pumpWidget(
+          MaterialApp(home: PathfindingVisualizerPage(viewModel: viewModel)));
+
+      viewModel.onEvent(PlayPauseButtonClick());
       viewModel.onEvent(PlayPauseButtonClick());
       await tester.pump();
-      expect(find.byIcon(Icons.play_arrow), findsOneWidget);
-      expect(find.byIcon(Icons.clear), findsOneWidget);
-
-      // Test for AlgorithmRunningStatus.finished
-      await tester.pumpAndSettle();
       expect(find.byIcon(Icons.play_arrow), findsOneWidget);
       expect(find.byIcon(Icons.clear), findsOneWidget);
     });

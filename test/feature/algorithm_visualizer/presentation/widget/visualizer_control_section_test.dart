@@ -19,7 +19,7 @@ void main() {
       viewModel = VisualizerViewModel(pathfindingExecutorService);
     });
 
-    testWidgets("Should display correct text for algorithm drop down menu",
+    testWidgets("Should display 'Dijkstra' for Dijkstra algorithm",
         (WidgetTester tester) async {
       await tester.pumpWidget(MaterialApp(
           home:
@@ -29,11 +29,42 @@ void main() {
           SelectAlgorithm(algorithm: PathFindingAlgorithmSelection.dijkstra));
       await tester.pump();
       expect(find.text("Dijkstra"), findsWidgets);
+    });
+
+    testWidgets("Should display 'A*' for A* algorithm",
+        (WidgetTester tester) async {
+      await tester.pumpWidget(MaterialApp(
+          home:
+              Material(child: VisualizerControlSection(viewModel: viewModel))));
 
       viewModel.onEvent(
           SelectAlgorithm(algorithm: PathFindingAlgorithmSelection.aStar));
       await tester.pump();
       expect(find.text("A*"), findsWidgets);
+    });
+
+    testWidgets("Should display 'BFS' for Breadth-First Search algorithm",
+        (WidgetTester tester) async {
+      await tester.pumpWidget(MaterialApp(
+          home:
+              Material(child: VisualizerControlSection(viewModel: viewModel))));
+
+      viewModel.onEvent(SelectAlgorithm(
+          algorithm: PathFindingAlgorithmSelection.breadthFirstSearch));
+      await tester.pump();
+      expect(find.text("BFS"), findsWidgets);
+    });
+
+    testWidgets("Should display 'DFS' for Depth-First Search algorithm",
+        (WidgetTester tester) async {
+      await tester.pumpWidget(MaterialApp(
+          home:
+              Material(child: VisualizerControlSection(viewModel: viewModel))));
+
+      viewModel.onEvent(SelectAlgorithm(
+          algorithm: PathFindingAlgorithmSelection.depthFirstSearch));
+      await tester.pump();
+      expect(find.text("DFS"), findsWidgets);
     });
   });
 }
