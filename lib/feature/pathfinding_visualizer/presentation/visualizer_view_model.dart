@@ -190,7 +190,8 @@ class VisualizerViewModel {
       return;
     }
 
-    if (_algorithmRunningStatus.value == AlgorithmRunningStatus.running) {
+    if (_algorithmRunningStatus.value == AlgorithmRunningStatus.running ||
+        _algorithmRunningStatus.value == AlgorithmRunningStatus.paused) {
       _pathFindingExecutorService.stopPathFinding();
 
       // because GridSizeChangesEvents are called in the build method of the
